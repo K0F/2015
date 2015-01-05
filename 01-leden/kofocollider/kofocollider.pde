@@ -3,7 +3,7 @@ import java.io.*;
 Editor editor;
 Timeline timeline;
 
-String sketchAbsPath = "/sketchBook/2014/11-listopad/kofocollider";
+String sketchAbsPath = "/sketchBook/2015/01-leden/kofocollider";
 
 void init(){
 
@@ -111,7 +111,7 @@ class Editor{
   }
 
   void generate(){
-    lines.set(0,"Ndef('a',{SinOsc.ar([22000/"+(pow(2,(int)random(1,6)))+",22000/"+(pow(2,(int)random(1,6)))+"]*"+((1.0 / ((pow(2,((int)random(1,8))))+0.0)) )+",mul:0.2)}).play");
+    lines.set(0,"Ndef('a',{Splay.ar(Pulse.ar(4/[1,2,2,4]) SinOsc.ar([22000/"+(pow(2,(int)random(1,6)))+",22000/"+(pow(2,(int)random(1,6)))+"]*(fib(12).scramble*"+((1.0 / ((pow(2,((int)random(1,8))))+0.0)) )+"),mul:0.2))}).play");
     execute= true;
   }
 
