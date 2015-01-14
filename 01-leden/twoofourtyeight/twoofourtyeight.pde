@@ -16,6 +16,7 @@ void setup(){
 void draw(){
   background(127);
   deck.plot();
+
 }
 
 
