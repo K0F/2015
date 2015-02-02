@@ -10,19 +10,21 @@ boolean render = false;
 
 void setup()
 {
-  size(1280, 720, OPENGL);
+  size(800,800, OPENGL);
  
   frameRate(60);
 
   minim = new Minim(this);
   player = minim.loadFile("/home/kof/recordings/marathon/export/marathon_session_2015-01-28.mp3",1024);
   player.play();
-
+  background(0);
 }
 
 void draw()
 {
-  background(0);
+  noStroke();
+  fill(0,30);
+  rect(0,0,width,height);
   stroke(255,200);
   
   // draw the waveforms
@@ -42,21 +44,23 @@ void draw()
     float val1 =  player.left.get(i);
     float val2 =  player.right.get(i);
 
+  for(float r = 0;r<1;r+=0.1){
 
 
 
-      float sx1 = (width/2+((cos(i/1024.0*PI-HALF_PI))*300.0) * map(val1,-1,1,0.01,1.1)) ;
-      float sy1 = (height/2+((sin(i/1024.0*PI-HALF_PI))*300.0) * map(val1,-1,1,0.01,1.1)) ;
+      float sx1 = (width/2+((cos(i/1024.0*PI-HALF_PI))*300.0) * map(val1,-1,1,0.01+r/10.0,1.1)) ;
+      float sy1 = (height/2+((sin(i/1024.0*PI-HALF_PI))*300.0) * map(val1,-1,1,0.01+r/10.0,1.1)) ;
 
-      float sx2 = (width/2+((cos(i/1024.0*PI+HALF_PI))*300.0) * map(val2,-1,1,0.01,1.1)) ;
-      float sy2 = (height/2+((sin(i/1024.0*PI+HALF_PI))*300.0) * map(val2,-1,1,0.01,1.1)) ;
+      float sx2 = (width/2+((cos(i/1024.0*PI+HALF_PI))*300.0) * map(val2,-1,1,0.01+r/10.0,1.1)) ;
+      float sy2 = (height/2+((sin(i/1024.0*PI+HALF_PI))*300.0) * map(val2,-1,1,0.01+r/10.0,1.1)) ;
 
 
-        stroke(#ffcc00,200);
+        stroke(#ffcc00,40);
         line(sx1,sy1,sx1,sy1+1);
-        stroke(#ccff00,200);
+        stroke(#ccff00,40);
         line(sx2,sy2,sx2,sy2+1);
     }
+  }
 
   if(fade<=100)
   fade += 1;
