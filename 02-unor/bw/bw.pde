@@ -1,11 +1,11 @@
 
 
 float fade = 0;
-boolean render = true;
+boolean render = false;
 
 void setup(){
 
-  size(1280,720);
+  size(1280,720,P2D);
 
   noSmooth();
 
@@ -21,8 +21,8 @@ void draw(){
   fill(255,fade);
 
 
-  for(int y = 0 ; y < height ; y += 2){
-    for(int x = 0 ; x < width ; x += 2){
+  for(int y = 0 ; y < height ; y += 8){
+    for(int x = 0 ; x < width ; x += 8){
       float sx = (noise(frameCount/100.0+x/200.0,y)-0.5)*100.0;
       float sy = (noise(x,frameCount/100.0+y/200.0)-0.5)*100.0;
 

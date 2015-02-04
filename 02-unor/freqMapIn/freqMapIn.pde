@@ -18,12 +18,12 @@ void init(){
 
 void setup()
 {
-  size(1024,768, OPENGL);
+  size(800,900, OPENGL);
 
   frameRate(60);
 
   minim = new Minim(this);
-  in = minim.getLineIn(Minim.STEREO, 1024);
+  in = minim.getLineIn(Minim.STEREO, 2048);
   in.enableMonitoring();
   in.mute();
   background(0);
@@ -50,7 +50,7 @@ void draw()
      line( x1, 150 + in.right.get(i)*50, x2, 150 + in.right.get(i+1)*50 );
      }
    */
-  for(int i = 0; i < in.bufferSize() - 1; i+=1){
+  for(int i = 0; i < in.bufferSize() - 1; i+=3){
     float val1 =  in.left.get(i);
     float val2 =  in.right.get(i);
 
@@ -67,22 +67,29 @@ void draw()
     float r2 = map(val2,-1,1,-30,30)+i/1.25;
 
     pushMatrix();
-    translate(width/2-30,height/4*3);
+    translate(width/4,height/4);
+    scale(0.5);
+    
+
+    pushMatrix();
+    translate(width/2-30,height-50);
     pushMatrix();
     rotate(radians(-45+10));
-    stroke(255,40);
+    stroke(255,60);
     arc(0,0,r1,r1,PI*3/2,TWO_PI);
     popMatrix();
     popMatrix();
 
 
     pushMatrix();
-    translate(width/2+30,height/4*3);
+    translate(width/2+30,height-50);
     pushMatrix();
     rotate(radians(-45-10));
-    stroke(255,40);
+    stroke(255,60);
     arc(0,0,r2,r2,PI*3/2,TWO_PI);
     popMatrix();
+    popMatrix();
+
     popMatrix();
   }
 
