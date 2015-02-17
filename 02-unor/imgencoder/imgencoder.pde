@@ -1,6 +1,10 @@
 
 import supercollider.*;
 import oscP5.*;
+import processing.opengl.*;
+import codeanticode.gsvideo.*;
+   
+GSCapture video;
 
 
 Synth s[];
@@ -9,6 +13,11 @@ void setup(){
 
   size(800,600);
   frameRate(100);
+
+
+  video = new GSCapture(this,640,480);
+  video.start();
+
 
   s = new Synth[width];
 
@@ -25,26 +34,33 @@ void setup(){
 
 
 void draw(){
-
   background(0);
+
 
   fill(255);
   noStroke();
-  ellipse(width/2,height/2,300,300);
+  
 
   int y = frameCount%height;
 
 
   stroke(255);
-  strokeWeight(5);
   line(0,0,width,height);
 
 
+  if(video.available()){
+    video.read();
+  }
+
+  if(video!=null)
+  image(video,0,0,width,height);
 
 
   loadPixels();
   for(int i = 0 ; i < width;i++){
-    float val = map(brightness(pixels[y*width+i]),0,255,0,0.005);
+    float val = map(brightness(pixels[y*width+i]),0,255,0,1.0);
+    val = pow(val,2);
+    val /= 255.0;
     s[i].set("amp",val);
   }
 
