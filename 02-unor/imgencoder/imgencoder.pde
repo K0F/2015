@@ -3,21 +3,33 @@ import supercollider.*;
 import oscP5.*;
 import processing.opengl.*;
 import codeanticode.gsvideo.*;
-   
+
+PImage mapa;
+
+int carret = 0;
+
+
 GSCapture video;
 
 boolean vid=  false;
 
 boolean refresh = false;
 
+boolean txt = true;
+
 Synth s[];
+
+int siz = 36;
 
 void setup(){
 
-  size(800,600);
+  size(800,600,OPENGL);
   frameRate(100);
 
-  textFont(createFont("Monaco",29));
+  mapa = loadImage("mapa.jpg");
+  mapa.filter(INVERT);
+
+  textFont(createFont("Monospaced",siz));
 
   video = new GSCapture(this,640,480);
   video.start();
@@ -43,43 +55,53 @@ String text = "";
 void draw(){
   background(0);
 
+  image(mapa,width-mapa.width,0);
 
   fill(255);
   noStroke();
-  
 
-  int y = frameCount%height;
 
-  
+  int y = carret%height;
 
-  stroke(255);
+
+
   line(0,0,width,height);
 
-if(vid){
-  if(video.available()){
-    video.read();
-  video.filter(GRAY);
+  for(int i = 0 ;i<1000;i++){
+  stroke(255,noise((i+carret)/133.0)*25);
+    float x = width*noise(carret/100.0+i/1000.0);
+    line(x,0,x,height);
   }
 
-  if(video!=null){
-    image(video,0,0,width,height);
+  if(vid){
+    if(video.available()){
+      video.read();
+      video.filter(GRAY);
+    }
+
+    if(video!=null){
+      image(video,0,0,width,height);
+    }
   }
-}
+
+  ellipse(width/2,height/2,100,100);
 
 
-if(frameCount%30==0){
-refresh = true;
-time = millis()+"";
-String tmp = "";
-while(textWidth(tmp)<width)
-  tmp+=(char)(int)random(64,104);
+  if(txt)
+  if(carret%(siz)==0){
+    refresh = true;
+    time = millis()+"";
+    String tmp = "--------";
+    //while(textWidth(tmp)<width)
+     // tmp+=(char)(int)random(64,104);
 
-text = time+" "+tmp;
-}else{
-refresh = false;
-}
+    text = time+" "+tmp;
+  }else{
+    refresh = false;
+  }
 
-  text(text,10,30+y-(y%30));
+  if(txt)
+  text(text,10,siz+y-(y%(siz)));
 
   loadPixels();
   for(int i = 0 ; i < width;i++){
@@ -92,6 +114,7 @@ refresh = false;
   stroke(255);
   line(0,y,width,y);
 
+  carret += 1;
 }
 
 void exit(){
