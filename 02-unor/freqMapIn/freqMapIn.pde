@@ -18,7 +18,7 @@ void init(){
 
 void setup()
 {
-  size(800,900, OPENGL);
+  size(800,900, P2D);
 
   frameRate(60);
 
