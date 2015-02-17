@@ -7,7 +7,7 @@ import codeanticode.gsvideo.*;
 PImage mapa;
 
 int carret = 0;
-
+int speed = 2;
 
 GSCapture video;
 
@@ -15,7 +15,7 @@ boolean vid=  false;
 
 boolean refresh = false;
 
-boolean txt = true;
+boolean txt = false;
 
 Synth s[];
 
@@ -26,8 +26,8 @@ void setup(){
   size(800,600,OPENGL);
   frameRate(100);
 
-  mapa = loadImage("mapa.jpg");
-  mapa.filter(INVERT);
+
+  reload();
 
   textFont(createFont("Monospaced",siz));
 
@@ -47,7 +47,21 @@ void setup(){
 }
 
 
+void reload(){
 
+  mapa = loadImage("mapa.jpg");
+  mapa.filter(INVERT);
+
+
+}
+
+void keyPressed(){
+  if(key==' '){
+
+    reload();
+
+  }
+}
 
 String time = "";
 String text = "";
@@ -55,7 +69,7 @@ String text = "";
 void draw(){
   background(0);
 
-  image(mapa,width-mapa.width,0);
+  image(mapa,0,0,width,height);
 
   fill(255);
   noStroke();
@@ -68,8 +82,8 @@ void draw(){
   line(0,0,width,height);
 
   for(int i = 0 ;i<1000;i++){
-  stroke(255,noise((i+carret)/133.0)*25);
-    float x = width*noise(carret/100.0+i/1000.0);
+    stroke(255,noise((i+carret)/133.0)*50);
+    float x = width/2*noise(carret/100.0+i/1000.0);
     line(x,0,x,height);
   }
 
@@ -88,20 +102,20 @@ void draw(){
 
 
   if(txt)
-  if(carret%(siz)==0){
-    refresh = true;
-    time = millis()+"";
-    String tmp = "--------";
-    //while(textWidth(tmp)<width)
-     // tmp+=(char)(int)random(64,104);
+    if(carret%(siz)==0){
+      refresh = true;
+      time = millis()+"";
+      String tmp = "--------";
+      //while(textWidth(tmp)<width)
+      // tmp+=(char)(int)random(64,104);
 
-    text = time+" "+tmp;
-  }else{
-    refresh = false;
-  }
+      text = time+" "+tmp;
+    }else{
+      refresh = false;
+    }
 
   if(txt)
-  text(text,10,siz+y-(y%(siz)));
+    text(text,10,siz+y-(y%(siz)));
 
   loadPixels();
   for(int i = 0 ; i < width;i++){
@@ -114,7 +128,7 @@ void draw(){
   stroke(255);
   line(0,y,width,y);
 
-  carret += 1;
+  carret += speed;
 }
 
 void exit(){
