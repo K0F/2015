@@ -14,8 +14,9 @@ void init(){
   execute("rm /tmp/lang ; mkfifo /tmp/lang ; chmod 777 /tmp/lang");
   execute("pkill scsynth");
   delay(250);
-  execute("(tail -f /tmp/lang | supercollider)");
+  execute("(tail -f /tmp/lang | supercolliderJs)");
   //execute("(terminator -x sh "+sketchAbsPath+"/boot.sh &)" );
+  delay(500);
 
   //  execute("/home/kof/sketchBook/2014/11-listopad/kofocollider/boot.sh");
   sclang("s.reboot");//"s = Server.local;s.boot;Server.internal=s;Server.default=s;Server.local=s;");

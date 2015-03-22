@@ -11,7 +11,7 @@ int speed = 2;
 
 GSCapture video;
 
-boolean vid=  false;
+boolean vid=  true;
 
 boolean refresh = false;
 
@@ -69,7 +69,7 @@ String text = "";
 void draw(){
   background(0);
 
-  image(mapa,0,0,width,height);
+  // image(mapa,0,0,width,height);
 
   fill(255);
   noStroke();

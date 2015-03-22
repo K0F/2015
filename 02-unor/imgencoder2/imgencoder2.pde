@@ -14,27 +14,27 @@ boolean refresh = false;
 
 boolean txt = false;
 
+  ArrayList curr = new ArrayList();
 Synth s[];
 
-int siz = 18;
+int siz = 128;
 
 String time = "";
 String text = "";
-String ttmp[];
+String ttmp = "this is process not product!";
 
 void setup(){
 
-  size(800,600,OPENGL);
+  size(1024,768,OPENGL);
   frameRate(100);
 
 
-  ttmp = loadStrings("/tmp/all.txt");
 
 
 
   println(PFont.list());
 
-  textFont(createFont("Liberation Sans",siz));
+  textFont(createFont("Monospace",siz));
 
 
 
@@ -63,11 +63,16 @@ int y = 0;
 int skip = 0;
 
 void keyPressed(){
-  if(key==' '){
+  if(keyCode == DELETE)
+  ttmp = "";
 
-    reload();
+    ttmp += ""+key;
+      //curr = new ArrayList();
 
-  }
+      //curr.add(ttmp+"");
+
+  //  reload();
+
 }
 void draw(){
   background(0);
@@ -75,22 +80,21 @@ void draw(){
   fill(255);
 
 
-  
+
   cnt =0;
   y = 0;
 
-  ArrayList curr = new ArrayList();
 
-  while(y<height){
-    curr.add(ttmp[cnt+skip]);
-    cnt++;
-    y = cnt*siz;
-  }
+    //  while(y<height){
+    
+      //curr.add(ttmp[cnt+skip]);
+    //  cnt++;
+    //  y = cnt*siz;
+   // }
 
-  for(int i = 0 ; i < curr.size();i++){
-    String tmp = (String)curr.get(i);
-    text(tmp,10,siz+siz*i);
-  }
+    //String tmp = (String)curr.get(i);
+    textAlign(LEFT);
+    text(ttmp,10,height/2,width,height);
 
   sonify();
 }
