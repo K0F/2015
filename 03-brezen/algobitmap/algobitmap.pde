@@ -23,6 +23,8 @@ Sun Mar 22 17:03:38 CET 2015
 
 PGraphics velky;
 
+float diameter = 400;
+
 void setup(){
 
   size(862,284,P2D);
@@ -31,7 +33,7 @@ void setup(){
   stroke(255);
 
 
-  velky=createGraphics(8622/2,2846/2);
+  velky=createGraphics(round(8622/3.0*2),round(2846/3.0*2));
 
   velky.beginDraw();
   for(int i = 0 ; i < velky.width;i+=1){
@@ -101,7 +103,7 @@ void draw(){
     int y = i/velky.width;
     float d = dist(x,y,velky.width/2,velky.height/2);
 
-    if(d<(sin(frameCount/100.0)+1.0)*250){
+    if(d<(sin(frameCount/100.0)+1.0)*diameter){
       color c = lerpColor(velky.pixels[i],velky.pixels[ (y-((int)random(-2,2)))*velky.width+(x-((int)random(-2,2))) ],0.01);
       velky.pixels[i]=c;
     }
