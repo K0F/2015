@@ -4,6 +4,8 @@ import java.io.*;
 
 ArrayList editors;
 Timeline timeline;
+int currEdit = 0;
+
 
 String sketchAbsPath = "/sketchBook/2015/01-leden/kofocollider";
 
@@ -17,21 +19,22 @@ void init(){
   execute("tail -f /tmp/lang | supercolliderJs");
   delay(500);
 
-/*
-  frame.removeNotify();
-  frame.setUndecorated(true);
-  frame.addNotify();
-*/
+  /*
+     frame.removeNotify();
+     frame.setUndecorated(true);
+     frame.addNotify();
+   */
 
   super.init();
 }
 
 void setup(){
   size(800,600);
-  
+
   editors = new ArrayList();
 
-  editors.add(new Editor());
+  editors.add(new Editor("alpha"));
+  currEdit=0;
 
   timeline = new Timeline(8);
 }
@@ -39,7 +42,7 @@ void setup(){
 void draw(){
 
   if(frameCount==5)
-  frame.setLocation(0,0);
+    frame.setLocation(0,0);
 
   background(0);
 
@@ -64,7 +67,7 @@ class Timeline{
   }
 
   void update(){
-    
+
 
   }
 
@@ -81,14 +84,14 @@ class Timeline{
     line(pos,height-5,pos,height-10);
 
     timer++;
-   /* 
-    if(timer%(int)div==0){
-      editor.generate();     
-    }
-*/
+    /* 
+       if(timer%(int)div==0){
+       editor.generate();     
+       }
+     */
 
     if(timer>=cap)
-    timer = 0;
+      timer = 0;
 
 
   }
@@ -104,19 +107,27 @@ class Editor{
   int carret = 0;
 
   int rozpal = 14;
+  PVector pos;
+  PVector dimm;
 
   float w =0,wc =0;
   boolean execute = false;
   float fade = 0;
+  String name;
 
-  Editor(){
+  Editor(String _name){
+    name = _name+"";
     lines = new ArrayList();
     textFont(loadFont("LiberationMono-12.vlw"));
 
-    lines.add("~a={SinOsc.ar([220,220.1],mul:0.2)};");
-    
-    for(int i = 0 ; i<50;i++)
-      lines.add(new String(""));
+    pos = new PVector(100,100);
+
+    lines.add("~"+name+"={");
+    lines.add("");
+    lines.add("};");
+    lines.add("~"+name+".fadeTime=5;");
+    lines.add("~"+name+".quant=2;");
+    lines.add("~"+name+".play;");
   }
 
   void generate(){
@@ -132,7 +143,19 @@ class Editor{
     fade = constrain(fade,0,255);
 
     pushMatrix();
-    translate(0,20);
+    translate(pos.x,pos.y);
+
+    float maxW = 0;
+    for(int i =0 ; i < lines.size();i++){
+      String curr = (String)lines.get(i);
+      maxW = max(maxW,textWidth(curr));
+    }
+
+    dimm = new PVector(maxW,lines.size()*14);
+
+    stroke(255,45);
+    fill(255,15);
+    rect(0,-20,dimm.x+40,dimm.y+20);
 
     noStroke();
     for(int i =0 ; i < lines.size();i++){
@@ -147,16 +170,6 @@ class Editor{
         w = textWidth(curr);
         wc = textWidth(curr.substring(0,carret));
 
-        if(execute){
-          String tmp="";
-          for(int i = 0 ; i < lines.size();i++){
-              String ttmp = (String)lines.get(i);
-              tmp+=ttmp;
-          }
-
-          sclang(tmp);
-          execute = false;
-        }
 
         fill(#ff0000,(sin(millis()/25.0)+1.0)/2*255);
         rect(wc+20-2,i*rozpal-10,2,12);
@@ -167,6 +180,16 @@ class Editor{
 
     popMatrix();
 
+    if(execute){
+      String tmp="";
+      for(int ii = 0 ; ii < lines.size();ii++){
+        String ttmp = (String)lines.get(ii);
+        tmp+=ttmp;
+      }
+
+      sclang(tmp);
+      execute = false;
+    }
   }
 
 }
@@ -174,6 +197,7 @@ class Editor{
 ////////////////////////////////////////////////////////////////
 
 void keyPressed(){
+  Editor editor = (Editor)editors.get(currEdit);
 
   if(keyCode==ENTER){
     editor.lines.add("");
