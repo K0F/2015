@@ -2,7 +2,7 @@ import java.io.*;
 
 ////////////////////////////////////////////////////////////////
 
-Editor editor;
+ArrayList editors;
 Timeline timeline;
 
 String sketchAbsPath = "/sketchBook/2015/01-leden/kofocollider";
@@ -11,28 +11,28 @@ String sketchAbsPath = "/sketchBook/2015/01-leden/kofocollider";
 
 void init(){
 
-  execute("rm /tmp/lang ; mkfifo /tmp/lang ; chmod 777 /tmp/lang");
+  execute("rm /tmp/lang ; mkfifo /tmp/lang ; chmod 775 /tmp/lang");
   execute("pkill scsynth");
   delay(250);
-  execute("(tail -f /tmp/lang | supercolliderJs)");
-  //execute("(terminator -x sh "+sketchAbsPath+"/boot.sh &)" );
+  execute("tail -f /tmp/lang | supercolliderJs");
   delay(500);
 
-  //  execute("/home/kof/sketchBook/2014/11-listopad/kofocollider/boot.sh");
-  sclang("s.reboot");//"s = Server.local;s.boot;Server.internal=s;Server.default=s;Server.local=s;");
-  sclang("Ndef('a').fadeTime = 0.1");
-  //sclang("Ndef('a').quant = 1.0");
-
+/*
   frame.removeNotify();
   frame.setUndecorated(true);
   frame.addNotify();
+*/
 
   super.init();
 }
 
 void setup(){
   size(800,600);
-  editor = new Editor();
+  
+  editors = new ArrayList();
+
+  editors.add(new Editor());
+
   timeline = new Timeline(8);
 }
 ////////////////////////////////////////////////////////////////
@@ -43,8 +43,11 @@ void draw(){
 
   background(0);
 
-  //sclang("Ndef('a',{SinOsc.ar([220,220.1]*"+(int)random(1,10)+",mul:0.2)}).play");
-  editor.render();
+  for(Object o : editors){
+    Editor tmp = (Editor)o;
+    tmp.render();
+  }
+
   timeline.render();
 }
 ////////////////////////////////////////////////////////////////
@@ -78,11 +81,11 @@ class Timeline{
     line(pos,height-5,pos,height-10);
 
     timer++;
-    
+   /* 
     if(timer%(int)div==0){
       editor.generate();     
     }
-
+*/
 
     if(timer>=cap)
     timer = 0;
@@ -108,11 +111,10 @@ class Editor{
 
   Editor(){
     lines = new ArrayList();
-    //println(PFont.list());
-    //textFont(loadFont("SempliceRegular-8.vlw"));
     textFont(loadFont("LiberationMono-12.vlw"));
 
-    lines.add("Ndef('a',{SinOsc.ar([220,220.1],mul:0.2)}).play");
+    lines.add("~a={SinOsc.ar([220,220.1],mul:0.2)};");
+    
     for(int i = 0 ; i<50;i++)
       lines.add(new String(""));
   }
@@ -146,7 +148,13 @@ class Editor{
         wc = textWidth(curr.substring(0,carret));
 
         if(execute){
-          sclang((String)lines.get(currln));
+          String tmp="";
+          for(int i = 0 ; i < lines.size();i++){
+              String ttmp = (String)lines.get(i);
+              tmp+=ttmp;
+          }
+
+          sclang(tmp);
           execute = false;
         }
 
@@ -168,7 +176,8 @@ class Editor{
 void keyPressed(){
 
   if(keyCode==ENTER){
-    editor.execute = true;
+    editor.lines.add("");
+    editor.currln++;
   }
 
   if(keyCode==LEFT)
@@ -280,7 +289,7 @@ void execute(String _in){
 }
 
 void sclang(String _in){
-  execute("echo \""+_in+";\" > /tmp/lang");
+  execute("echo -n \""+_in+"\" | scall");
 }
 
 

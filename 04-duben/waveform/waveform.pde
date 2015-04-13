@@ -7,7 +7,7 @@ int step = 24;
 float fade = 0;
 boolean render = false;
 
-int bufs=480*2;
+int bufs=800;
 
 void init(){
   /*
@@ -22,7 +22,7 @@ ArrayList stack,hold;
 
 void setup()
 {
-  size(480*2,240, OPENGL);
+  size(800,240, OPENGL);
 
   noSmooth();
   frameRate(60);
@@ -48,7 +48,7 @@ class Hold{
   for(int i = 0 ; i <_list.size();i++){
     list.add((PVector)_list.get(i));
   }
-    alp = 50.0;
+    alp = 250.0;
   }
 
   void draw(){
@@ -60,15 +60,15 @@ class Hold{
         float x1 = map(i-1,0,list.size(),0,width);
         float x2 = map(i,0,list.size(),0,width);
         PVector tmp = (PVector)list.get(i);
-        float y = (tmp.x+tmp.y)*250.0+height/2;
+        float y = (tmp.x+tmp.y)*100.0+height/2;
         vertex(x1,y,x2,y);
       }
       endShape();
     }
 
 
-    if(cnt>10)
-      alp-=10;
+    if(cnt>60)
+      alp-=(250/10.0);
     cnt++;
 
     if(alp<=0)
@@ -87,6 +87,7 @@ void draw()
   noFill();
   for(int i = 0; i < in.bufferSize() - 1; i++)
   {
+  if(i%10==0)
     stack.add(new PVector(in.left.get(i),in.right.get(i)));
 
     if(stack.size()>bufs*4){
