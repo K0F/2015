@@ -212,11 +212,11 @@ class Item{
 
     if(over()){
       for(int i = 0 ; i < metadata.size();i++){
-      JSONObject tmp = metadata.getJSONObject(i);
-      text(tmp.getString("name")+": "+tmp.getString("value"),mouseX+W+25,mouseY+i*textSize);
+        JSONObject tmp = metadata.getJSONObject(i);
+        text(tmp.getString("name")+": "+tmp.getString("value"),mouseX+W+25,mouseY+i*textSize);
       }
 
-      }
+    }
   }
 }
 ////////////////////////////////////////////////
