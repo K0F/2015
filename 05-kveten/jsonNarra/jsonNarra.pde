@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////
 String token;
-String NARRA_URL="172.20.10.2";
+String NARRA_URL="192.168.1.103";
 String filename = "projects_faif_items.json";
 //String NARRA_URL = "api.narra.eu";
 ///////////////////////////////////////////////////////
@@ -20,10 +20,7 @@ void setup(){
 
   token = loadStrings("token.txt")[0];
 
-  if(ONLINE)
-    project = new Project("faif");
-  else
-    project = new Project(filename);
+  project = new Project("faif",filename);
 
   textFont(createFont("Inconsolata",textSize,true));
 }
@@ -32,6 +29,8 @@ void draw(){
   background(255);
   project.draw();
 }
+
+////////////////////////////////////////////////
 
 class Test{
 
@@ -59,26 +58,49 @@ class Test{
   }
 
 };
+////////////////////////////////////////////////
 
 class Project{
 
   JSONObject root;
   String name;
-  ArrayList items;
+  String filename;
 
-  Project(String _name){
+  ArrayList items;
+  ArrayList sequences;
+
+  Project(String _name,String _filename){
+
     name = _name;
-    if(ONLINE)
+    if(ONLINE){
       root = loadJSONObject("http://"+NARRA_URL+"/v1/projects/"+name+"/items?token="+token);
-    else
-      root = loadJSONObject(name);
+
+    }
+    else{
+      filename = _filename;
+      root = loadJSONObject(_filename);
+    }
 
     parse();
+    getSequences();
 
     if(DEBUG)
       println(root);
   }
 
+  void getSequences(){
+
+    JSONObject ttmp = loadJSONObject("http://"+NARRA_URL+"/v1/projects/"+name+"/sequences?token="+token);
+    JSONArray tmp;
+    tmp = ttmp.getJSONArray("sequences");
+
+    sequences = new ArrayList();
+
+    for(int i = 0 ; i < tmp.size();i++){
+      JSONObject o = tmp.getJSONObject(i);
+      sequences.add(new Sequence(o,this));
+    }
+  }
 
   void parse(){
     JSONArray _items = root.getJSONArray("items");
@@ -91,9 +113,6 @@ class Project{
     }
   }
 
-
-
-
   void draw(){
     fill(0);
     //text(name,10,10);
@@ -105,6 +124,7 @@ class Project{
   }
 
 };
+////////////////////////////////////////////////
 
 class Item{
 
@@ -186,19 +206,43 @@ class Item{
     fill(0);
     //text(name,10,10);
 
-    fill(#fafafa);
+    fill(over()?#fafafa:#ffcc00);
     stroke(0,10);
     rect(pos.x-5,pos.y-1,W+25,textSize+5);
     fill(0,120);
     text(name,pos.x,pos.y+textSize);
   }
 }
+////////////////////////////////////////////////
 
 class Library{
   String id;
   String name;
 
 };
+
+////////////////////////////////////////////////
+
+class Sequence{
+
+  JSONObject root;
+  JSONArray marks;
+
+  Project parent;
+
+  String name;
+  String id;
+
+  Sequence(JSONObject _root,Project _parent){
+    root = _root;
+    parent = _parent;
+    id = root.getString("id");
+    name = name = root.getString("name");
+    root = loadJSONObject("http://"+NARRA_URL+"/v1/projects/"+parent.name+"/sequence/"+id).getJSONObject("sequence");
+    marks = root.getJSONArray("marks");
+  }
+
+}
 
 class Author{
   String id;
