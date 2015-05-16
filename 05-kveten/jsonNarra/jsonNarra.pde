@@ -108,7 +108,6 @@ class Project{
 
     for(int i = 0 ; i < _items.size();i++){
       JSONObject tmp = _items.getJSONObject(i);
-
       items.add(new Item(tmp,20,50+50*i));
     }
   }
@@ -143,7 +142,6 @@ class Item{
 
   float W;
   PVector pos;
-
 
   Item(JSONObject _data, float _x, float _y){
     pos = new PVector(_x,_y);
@@ -193,7 +191,7 @@ class Item{
   boolean over(){
     if(
         mouseX >= pos.x && 
-        mouseX <= pos.x+W+10 &&
+        mouseX <= pos.x+W+25 &&
         mouseY >= pos.y &&
         mouseY <= pos.y + textSize
       )
@@ -206,11 +204,19 @@ class Item{
     fill(0);
     //text(name,10,10);
 
-    fill(over()?#fafafa:#ffcc00);
+    fill(!over()?#fafafa:#ffcc00);
     stroke(0,10);
     rect(pos.x-5,pos.y-1,W+25,textSize+5);
     fill(0,120);
     text(name,pos.x,pos.y+textSize);
+
+    if(over()){
+      for(int i = 0 ; i < metadata.size();i++){
+      JSONObject tmp = metadata.getJSONObject(i);
+      text(tmp.getString("name")+": "+tmp.getString("value"),mouseX+W+25,mouseY+i*textSize);
+      }
+
+      }
   }
 }
 ////////////////////////////////////////////////
@@ -233,15 +239,14 @@ class Sequence{
   String name;
   String id;
 
-  Sequence(JSONObject _root,Project _parent){
+  Sequence(JSONObject _root, Project _parent){
     root = _root;
     parent = _parent;
     id = root.getString("id");
     name = name = root.getString("name");
-    root = loadJSONObject("http://"+NARRA_URL+"/v1/projects/"+parent.name+"/sequence/"+id).getJSONObject("sequence");
+    root = loadJSONObject("http://"+NARRA_URL+"/v1/projects/"+parent.name+"/sequences/"+id+"?token="+token).getJSONObject("sequence");
     marks = root.getJSONArray("marks");
   }
-
 }
 
 class Author{
