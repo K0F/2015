@@ -87,8 +87,6 @@ class Project{
     for(int i = 0 ; i < _items.size();i++){
       JSONObject tmp = _items.getJSONObject(i);
 
-
-
       items.add(new Item(tmp,20,50+50*i));
     }
   }
@@ -102,14 +100,10 @@ class Project{
 
     for(int i = 0 ; i < items.size();i++){
       Item tmp = (Item)items.get(i);
-      float w = textWidth(tmp.name);
-      fill(#fafafa);
-      stroke(0,10);
-      rect(tmp.pos.x-5,tmp.pos.y-1,w+25,textSize+5);
-      fill(0,120);
-      text(tmp.name,tmp.pos.x,tmp.pos.y+textSize);
+      tmp.draw();
     }
   }
+
 };
 
 class Item{
@@ -117,29 +111,28 @@ class Item{
   JSONObject data;
   JSONArray metadata;
   String name;
+  String video_proxy_lq;
+  String video_proxy_hq;
   String audio_proxy;
-  String video_proxy;
   String id;
   String type;
   String [] thumbnails;
   String url;
+
   ArrayList thumbs;
 
-
+  float W;
   PVector pos;
 
 
   Item(JSONObject _data, float _x, float _y){
-
     pos = new PVector(_x,_y);
-
     data = _data;
-
     id = data.getString("id");
-    
     data = getItem(id);
-    
     parse();
+
+    W = textWidth(name);
   }
 
   JSONObject getItem(String _id){
@@ -154,15 +147,17 @@ class Item{
 
   void parse(){
 
-    
-
     name = data.getString("name");
     type = data.getString("type");
 
     if(type.equals("video")){
 
       url = data.getString("url");
-      video_proxy = data.getString("video_proxy_hq");
+      video_proxy_hq = data.getString("video_proxy_hq");
+      video_proxy_lq = data.getString("video_proxy_lq");
+      audio_proxy = data.getString("audio_proxy");
+      metadata = data.getJSONArray("metadata");
+
       JSONArray tmp = data.getJSONArray("thumbnails");
       thumbnails = new String[tmp.size()];
       thumbs = new ArrayList();
@@ -172,16 +167,40 @@ class Item{
         if(LOAD_THUMBS)
           thumbs.add(loadImage(thumbnails[ii]));
       }
-
     }
+  }
+
+  boolean over(){
+    if(
+        mouseX >= pos.x && 
+        mouseX <= pos.x+W+10 &&
+        mouseY >= pos.y &&
+        mouseY <= pos.y + textSize
+      )
+      return true;
+    else 
+      return false;
+  }
+
+  void draw(){
+    fill(0);
+    //text(name,10,10);
+
+    fill(#fafafa);
+    stroke(0,10);
+    rect(pos.x-5,pos.y-1,W+25,textSize+5);
+    fill(0,120);
+    text(name,pos.x,pos.y+textSize);
   }
 }
 
-class Collection{
+class Library{
+  String id;
+  String name;
+
 };
 
 class Author{
-};
-
-class Graph{
+  String id;
+  String name;
 };
