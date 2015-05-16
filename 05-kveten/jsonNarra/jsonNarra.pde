@@ -18,6 +18,8 @@ void setup(){
 
   size(1024,576);
 
+  smooth();
+
   token = loadStrings("token.txt")[0];
 
   project = new Project("faif",filename);
