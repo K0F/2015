@@ -1,14 +1,18 @@
 //////////////////////////////////////////////////////
 String token;
-String NARRA_URL="192.168.1.103";
+
+//String NARRA_URL="192.168.1.100";
+String NARRA_URL = "api.narra.eu";
+
 String filename = "projects_faif_items.json";
-//String NARRA_URL = "api.narra.eu";
+String port = "80";
+
 ///////////////////////////////////////////////////////
 
 //Test test;
 Project project;
 
-boolean ONLINE = false;
+boolean ONLINE = true;
 boolean DEBUG = true;
 boolean LOAD_THUMBS = false;
 
@@ -16,7 +20,7 @@ int textSize = 12;
 
 void setup(){
 
-  size(1024,576);
+  size(1600,900,P2D);
 
   smooth();
 
@@ -75,8 +79,7 @@ class Project{
 
     name = _name;
     if(ONLINE){
-      root = loadJSONObject("http://"+NARRA_URL+"/v1/projects/"+name+"/items?token="+token);
-
+      root = loadJSONObject("http://"+NARRA_URL+":"+port+"/v1/projects/"+name+"/items?token="+token);
     }
     else{
       filename = _filename;
@@ -84,7 +87,7 @@ class Project{
     }
 
     parse();
-    getSequences();
+    //getSequences();
 
     if(DEBUG)
       println(root);
@@ -92,7 +95,7 @@ class Project{
 
   void getSequences(){
 
-    JSONObject ttmp = loadJSONObject("http://"+NARRA_URL+"/v1/projects/"+name+"/sequences?token="+token);
+    JSONObject ttmp = loadJSONObject("http://"+NARRA_URL+":"+port+"/v1/projects/"+name+"/sequences?token="+token);
     JSONArray tmp;
     tmp = ttmp.getJSONArray("sequences");
 
@@ -110,18 +113,25 @@ class Project{
 
     for(int i = 0 ; i < _items.size();i++){
       JSONObject tmp = _items.getJSONObject(i);
-      items.add(new Item(tmp,20,50+50*i));
+      items.add(new Item(tmp,30,70+20*i,this));
     }
   }
 
   void draw(){
     fill(0);
-    //text(name,10,10);
+    text("project: "+name,20,20);
+
 
     for(int i = 0 ; i < items.size();i++){
       Item tmp = (Item)items.get(i);
       tmp.draw();
     }
+    /*
+       for(int i = 0 ; i < sequences.size();i++){
+       Sequence tmp = (Sequence)sequences.get(i);
+       tmp.draw();
+       }
+     */
   }
 
 };
@@ -140,16 +150,20 @@ class Item{
   String [] thumbnails;
   String url;
 
+  float in,out;
+
   ArrayList thumbs;
+  Project parent;
 
   float W;
   PVector pos;
 
-  Item(JSONObject _data, float _x, float _y){
+  Item(JSONObject _data, float _x, float _y,Project _parent){
     pos = new PVector(_x,_y);
     data = _data;
     id = data.getString("id");
     data = getItem(id);
+    parent = _parent;
     parse();
 
     W = textWidth(name);
@@ -160,6 +174,8 @@ class Item{
 
     if(!ONLINE)
       tmp = loadJSONObject("items_"+_id+".json");
+    else
+      tmp = loadJSONObject("http://"+NARRA_URL+":"+port+"/v1/items/"+_id+"?token="+token);
 
     return tmp.getJSONObject("item"); 
   }
@@ -186,6 +202,10 @@ class Item{
         thumbnails[ii] = tmp.getString(ii);
         if(LOAD_THUMBS)
           thumbs.add(loadImage(thumbnails[ii]));
+
+        if(ii==0)
+          thumbs.add(loadImage(thumbnails[ii]));
+
       }
     }
   }
@@ -195,7 +215,7 @@ class Item{
         mouseX >= pos.x && 
         mouseX <= pos.x+W+25 &&
         mouseY >= pos.y &&
-        mouseY <= pos.y + textSize
+        mouseY <= pos.y + textSize + 7
       )
       return true;
     else 
@@ -213,20 +233,22 @@ class Item{
     text(name,pos.x,pos.y+textSize);
 
     if(over()){
+    float Y = 0;
       for(int i = 0 ; i < metadata.size();i++){
         JSONObject tmp = metadata.getJSONObject(i);
-        text(tmp.getString("name")+": "+tmp.getString("value"),mouseX+W+25,mouseY+i*textSize);
+        text(tmp.getString("name")+": "+tmp.getString("value"),mouseX+50+25,mouseY+i*textSize);
+        Y = mouseY+i*textSize+10;
       }
-
+        image((PImage)thumbs.get(0), mouseX+50+25 , Y );
     }
   }
 }
+
 ////////////////////////////////////////////////
 
 class Library{
   String id;
   String name;
-
 };
 
 ////////////////////////////////////////////////
@@ -241,13 +263,54 @@ class Sequence{
   String name;
   String id;
 
+  ArrayList itms;
+
+
   Sequence(JSONObject _root, Project _parent){
     root = _root;
+
+
     parent = _parent;
     id = root.getString("id");
     name = name = root.getString("name");
-    root = loadJSONObject("http://"+NARRA_URL+"/v1/projects/"+parent.name+"/sequences/"+id+"?token="+token).getJSONObject("sequence");
+    root = loadJSONObject("http://"+NARRA_URL+":"+port+"/v1/projects/"+parent.name+"/sequences/"+id+"?token="+token).getJSONObject("sequence");
     marks = root.getJSONArray("marks");
+
+    parse();
+
+  }
+
+  Item getItemByName(String _name){
+    Item tmp = null;
+    for(int i = 0 ; i < parent.items.size();i++){
+      Item ttmp = (Item)parent.items.get(i);
+      if(ttmp.name.equals("name"))
+        tmp = ttmp;
+    }
+
+    return tmp;
+  }
+
+  void parse(){
+
+    itms = new ArrayList();
+
+    for(int i = 0 ; i < marks.size(); i++){
+      JSONObject tmp = marks.getJSONObject(i);
+      JSONObject clip = tmp.getJSONObject("clip");
+      Item it = getItemByName(clip.getString("name"));
+      //it.in = tmp.getFloat("in");
+      //it.out = tmp.getFloat("out");
+      itms.add(it);
+    }
+  }
+
+  void draw(){
+    stroke(0);
+    for(int i = 0 ; i < itms.size();i++){
+      Item item = (Item)itms.get(i);
+      line(i*100,height-100,item.pos.x,item.pos.y);
+    }  
   }
 }
 
