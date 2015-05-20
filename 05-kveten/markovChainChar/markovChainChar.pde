@@ -3,16 +3,15 @@
 String filename = "source.txt";
 int Nth = 2;
 
-boolean debug = true;
+boolean debug = false;
 
 Markov chain;
 
 void setup(){
 
-  size(320,240);
+  size(800,870);
   chain = new Markov(filename,Nth);
-
-  textFont(createFont("Inconsolata",9,true));
+  textFont(loadFont("SempliceRegular-8.vlw"));
 }
 
 void draw(){
@@ -43,7 +42,6 @@ class Markov{
 
   void castChars(){
     chars = new ArrayList();
-    int count = 0;
     for(int i = 0 ; i < raw.length;i++){
       String line = raw[i];
       for(int ii = 0 ;ii < line.length()-N;ii++){
@@ -51,22 +49,24 @@ class Markov{
         for(int iii = 1 ;iii <= N;iii++){
           next+=line.charAt(ii+iii)+"";
         }
-        chars.add(new Character(this,line.charAt(ii),next,count));
-        count++;
+        chars.add(new Character(this,line.charAt(ii),next,chars.size()-1));
       }
     }
   }
 
   void map(){
+    int cnt = 0;
     for(int i = 0;i<chars.size();i++){
       Character tmp = (Character)chars.get(i);
       for(int ii = 0;ii<tmp.following.size();ii++){
-        String fol = (String)tmp.following.get(ii);
+        Following fol = (Following)tmp.following.get(ii);
+        String name = fol.txt;
+        int count = fol.count;
         if(ii==0)
-          text(tmp.c+" -> "+fol,20,(i+ii)*12+20);
+          text(tmp.c+" -> "+name+" "+count+"x",20,(cnt)*12+20);
         else
-          text("    "+fol,20,(i+ii)*12+20);
-
+          text("    "+name+" "+count+"x",20,(cnt)*12+20);
+        cnt++;
       }
     }
   }
@@ -99,7 +99,7 @@ check:
         if(debug)
           println("ok already got: "+c+" .. adding followings: "+next);
         tmp.addFollowing(next);
-        parent.chars.remove(this);
+        parent.chars.remove(index);
         break check;
       }
     }
@@ -108,6 +108,32 @@ check:
   }
 
   void addFollowing(String _tmp){
-    following.add(_tmp);
+    following.add(new Following(this,_tmp,following.size()-1));
+  }
+}
+
+class Following{
+  String txt = "";
+  int count;
+  int index;
+  Character parent;
+
+  Following(Character _parent,String _txt,int _index){
+    txt = _txt;
+    parent = _parent;
+    index = _index;
+    check();
+  }
+
+  void check(){
+check:
+    for(int i = 0;i<parent.following.size();i++){
+      Following tmp = (Following)parent.following.get(i);
+      if(tmp.txt.equals(txt) && tmp!=this){
+        tmp.count++;
+        parent.following.remove(index);
+        break check;
+      }
+    }
   }
 }
