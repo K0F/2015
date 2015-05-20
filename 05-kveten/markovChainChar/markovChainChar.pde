@@ -1,7 +1,7 @@
 
 
 String filename = "source.txt";
-int Nth = 2;
+int Nth = 3;
 
 boolean debug = false;
 
@@ -74,18 +74,19 @@ class Markov{
   }
 
   void dream(){
+try{
     int seek = 1;
     boolean hasF = false;
     char last = 'a';
     Character tmp = null;
     Following flw = null;
 
-    while(!hasF){
+    while(!hasF || flw==null){
       last = text.charAt(text.length()-seek);
       tmp = getByChar(last);
       try{ 
         hasF = tmp.following!=null?true:false;
-        flw = (Following)tmp.following.get((int)random(0,tmp.following.size()-1));
+        flw = tmp.getProbableFollowing();
         hasF=true;
       }catch(Exception e){
         seek++;
@@ -93,9 +94,14 @@ class Markov{
 
     }
 
+    if(text.length()>10000){
+    last = text.charAt(text.length()-1);
+    text = last+"";
+    }
     text += flw.txt;
-
+}catch(Exception e){;}
     text(text,20,20,width-40,height-40);
+
   }
 
   Character getByChar(char _c){
@@ -152,12 +158,29 @@ check:
   void addFollowing(String _tmp){
     following.add(new Following(this,_tmp,following.size()-1));
   }
+
+  Following getProbableFollowing(){
+    if(following==null)
+      return null;
+
+    ArrayList options = new ArrayList();
+    for(int i = 0 ; i < following.size();i++){
+      Following fol = (Following)following.get(i);
+      for(int ii = 0 ;ii<fol.count;ii++){
+        options.add(fol);
+      }
+    }
+
+
+    return (Following)options.get((int)random(0,following.size()));
+  }
+
 }
 
 class Following{
   String txt = "";
   int count;
-  int index;
+  int index = 1;
   Character parent;
 
   Following(Character _parent,String _txt,int _index){
