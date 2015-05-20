@@ -1,7 +1,7 @@
 
 
 String filename = "source.txt";
-int Nth = 3;
+int Nth = 2;
 
 boolean debug = false;
 
@@ -44,16 +44,20 @@ class Markov{
 
   void castChars(){
     chars = new ArrayList();
+    String rraw = "";
+
     for(int i = 0 ; i < raw.length;i++){
-      String line = raw[i];
-      for(int ii = 0 ;ii < line.length()-N;ii++){
-        String next = "";
-        for(int iii = 1 ;iii <= N;iii++){
-          next+=line.charAt(ii+iii)+"";
-        }
-        chars.add(new Character(this,line.charAt(ii),next,chars.size()-1));
-      }
+      rraw += raw[i]+"\n";
     }
+
+    for(int i = 0 ;i < rraw.length()-N;i++){
+      String next = "";
+      for(int ii = 1 ;ii <= N;ii++){
+        next+=rraw.charAt(i+ii)+"";
+      }
+      chars.add(new Character(this,rraw.charAt(i),next,chars.size()-1));
+    }
+
   }
 
   void map(){
@@ -74,32 +78,32 @@ class Markov{
   }
 
   void dream(){
-try{
-    int seek = 1;
-    boolean hasF = false;
-    char last = 'a';
-    Character tmp = null;
-    Following flw = null;
+    try{
+      int seek = 1;
+      boolean hasF = false;
+      char last = 'a';
+      Character tmp = null;
+      Following flw = null;
 
-    while(!hasF || flw==null){
-      last = text.charAt(text.length()-seek);
-      tmp = getByChar(last);
-      try{ 
-        hasF = tmp.following!=null?true:false;
-        flw = tmp.getProbableFollowing();
-        hasF=true;
-      }catch(Exception e){
-        seek++;
+      while(!hasF || flw==null){
+        last = text.charAt(text.length()-seek);
+        tmp = getByChar(last);
+        try{ 
+          hasF = tmp.following!=null?true:false;
+          flw = tmp.getProbableFollowing();
+          hasF=true;
+        }catch(Exception e){
+          seek++;
+        }
+
       }
 
-    }
-
-    if(text.length()>10000){
-    last = text.charAt(text.length()-1);
-    text = last+"";
-    }
-    text += flw.txt;
-}catch(Exception e){;}
+      if(text.length()>10000){
+        last = text.charAt(text.length()-1);
+        text = last+"";
+      }
+      text += flw.txt;
+    }catch(Exception e){;}
     text(text,20,20,width-40,height-40);
 
   }
