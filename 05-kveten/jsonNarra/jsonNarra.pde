@@ -233,13 +233,13 @@ class Item{
     text(name,pos.x,pos.y+textSize);
 
     if(over()){
-    float Y = 0;
+      float Y = 0;
       for(int i = 0 ; i < metadata.size();i++){
         JSONObject tmp = metadata.getJSONObject(i);
         text(tmp.getString("name")+": "+tmp.getString("value"),mouseX+50+25,mouseY+i*textSize);
         Y = mouseY+i*textSize+10;
       }
-        image((PImage)thumbs.get(0), mouseX+50+25 , Y );
+      image((PImage)thumbs.get(0), mouseX+50+25 , Y );
     }
   }
 }
