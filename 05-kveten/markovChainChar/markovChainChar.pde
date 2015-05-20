@@ -17,7 +17,7 @@ void setup(){
 void draw(){
   background(0);
   fill(255);
-  chain.map();
+  chain.dream();
 }
 
 
@@ -28,6 +28,8 @@ class Markov{
 
   float percent;
   boolean done = false;
+
+  String text = "T";
 
   ArrayList chars;
 
@@ -70,6 +72,44 @@ class Markov{
       }
     }
   }
+
+  void dream(){
+    int seek = 1;
+    boolean hasF = false;
+    char last = 'a';
+    Character tmp = null;
+    Following flw = null;
+
+    while(!hasF){
+      last = text.charAt(text.length()-seek);
+      tmp = getByChar(last);
+      try{ 
+        hasF = tmp.following!=null?true:false;
+        flw = (Following)tmp.following.get((int)random(0,tmp.following.size()-1));
+        hasF=true;
+      }catch(Exception e){
+        seek++;
+      }
+
+    }
+
+    text += flw.txt;
+
+    text(text,20,20,width-40,height-40);
+  }
+
+  Character getByChar(char _c){
+    Character tmp = null;
+search:
+    for(int i = 0 ; i < chars.size();i++){
+      Character ch = (Character)chars.get(i);
+      if(_c==ch.c){
+        tmp = ch;
+        break search;
+      }
+    }
+    return tmp;
+  }
 }
 
 class Character{
@@ -91,20 +131,22 @@ class Character{
   }
 
   void checkIfExists(){
-    boolean none = false;
+    boolean none = true;
 check:
     for(int i = 0 ; i<parent.chars.size();i++){
       Character tmp = (Character)parent.chars.get(i);
       if(tmp!=this && tmp.c == c){
+        none = false;
         if(debug)
           println("ok already got: "+c+" .. adding followings: "+next);
         tmp.addFollowing(next);
         parent.chars.remove(index);
         break check;
+      }else{
+        addFollowing(next);
       }
     }
 
-    addFollowing(next);
   }
 
   void addFollowing(String _tmp){
