@@ -29,7 +29,7 @@ class Markov{
   float percent;
   boolean done = false;
 
-  String text = "T";
+  String text = " ";
 
   ArrayList chars;
 
@@ -81,7 +81,7 @@ class Markov{
     try{
       int seek = 1;
       boolean hasF = false;
-      char last = 'a';
+      char last = ' ';
       Character tmp = null;
       Following flw = null;
 
@@ -120,6 +120,11 @@ search:
     }
     return tmp;
   }
+}
+
+class Word{
+
+
 }
 
 class Character{
