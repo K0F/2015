@@ -46,6 +46,6 @@ void keyPressed(){
     if(key==' ')
     phase++;
 
-    phase = phase % 2;
+    phase = phase % 4;
 
 }

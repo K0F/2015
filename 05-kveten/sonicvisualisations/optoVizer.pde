@@ -93,11 +93,13 @@ class OptoVizer {
     pushMatrix();
     translate(width/2, 0);
     int cnt = 0;
+    float sm = 0;
     for (Object o : amps) {
       pushMatrix();
       translate(0, cnt);
       float val = (Float)o;
-      line(-val, 0, val, 0);
+      sm += (val-sm)/10.0;
+      line(-sm, 0, sm, 0);
       popMatrix();
       cnt++;
     }
@@ -136,8 +138,11 @@ class OptoVizer {
       pushMatrix();
       translate(0, cnt);
       float val = (Float)o;
-      stroke(val*1.5);
-      line(0, 0, width, 0);
+      stroke(val);
+      for(int i = 0 ; i < val/4;i++){
+      float r = random(width);
+      line(r, 0, r+1, 0);
+      }
       popMatrix();
       cnt++;
     }
@@ -151,17 +156,21 @@ class OptoVizer {
   }
 
   void plotFour() {
-    int cnt=0;
+    pushMatrix();
+    translate(0, 0);
+    int cnt = 0;
+    float sm = 0;
     for (Object o : amps) {
       pushMatrix();
       translate(0, cnt);
       float val = (Float)o;
-      stroke(val*1.5);
-      line(0, 0, width, 0);
+      sm += (val-sm)/10.0;
+      line(0,0, sm/2, 0);
       popMatrix();
       cnt++;
     }
-  }
+    popMatrix();
+   }
 
 
   ///////
