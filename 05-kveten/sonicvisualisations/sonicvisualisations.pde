@@ -4,6 +4,8 @@ OptoVizer opto;
 ////////////////////////
 int width = 768;
 int height = 1024;
+
+int phase = 0;
 ////////////////////////
 
 void setup()
@@ -18,6 +20,13 @@ void draw(){
   noStroke();
   rect(0,0,width,height);
   stroke(255,200);
-  opto.phase(1);
+  opto.phase(phase);
 }
 
+void keyPressed(){
+    if(key==' ')
+    phase++;
+
+    phase = phase % 2;
+
+}

@@ -43,8 +43,11 @@ class OptoVizer{
 
   void phase(int _phase){
     switch(_phase){
-      case 1:
+      case 0:
         one();
+        break;
+        case 1:
+        two();
         break;
       default:
         voids();
@@ -53,10 +56,13 @@ class OptoVizer{
 
   void voids(){;}
 
+///////
+  
   void one(){
     compute();
     plotOne();
   }
+
 
   void plotOne(){ 
     pushMatrix();
@@ -73,6 +79,27 @@ class OptoVizer{
     popMatrix();
   }
 
+////////
+  
+  void two(){
+    compute();
+    plotTwo();
+  }
+
+  void plotTwo(){
+     int cnt=0;
+     for(Object o:amps){
+      pushMatrix();
+      translate(0,cnt);
+      float val = (Float)o;
+      stroke(val);
+      line(0,0,width,0);
+      popMatrix();
+      cnt++;
+    } 
+  }
+
+  ///////
   void compute(){
 
     //SCALE += ((sslope*SCALAR)-SCALE)/2.0;
@@ -80,11 +107,15 @@ class OptoVizer{
     float levels[] = averages();
     slope = 0;
 
+    float sm = 0;
+
     for(int i = 0; i < input.bufferSize() - 1; i++){
       float base = (input.left.get(i) + input.right.get(i))/2.0;
       float amp = map(base,levels[0],levels[1],0,SCALE);
+      
+      sm += (amp-sm)/3.0;
 
-      amps.add(amp);
+      amps.add(sm);
 
       if(amps.size()>height){
         amps.remove(0);

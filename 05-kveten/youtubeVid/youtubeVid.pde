@@ -1,0 +1,4 @@
+import gstreamer.*;
+
+
+GSTPipeline test;
