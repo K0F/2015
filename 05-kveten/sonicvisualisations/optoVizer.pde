@@ -1,10 +1,27 @@
+/*
+Optosonic transoder by Kof 2015-06-01
+Copyright (C) 2015 Krystof Pesek
 
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+*/
 
 import ddf.minim.*;
 import ddf.minim.analysis.*;
 ///////////////////////////////////////////////
 
-class OptoVizer{
+class OptoVizer {
 
   Minim minim;
   FFT fftLog;
@@ -24,14 +41,14 @@ class OptoVizer{
   ArrayList amps;
   ArrayList scales;
 
-  OptoVizer(PApplet _parent){
+  OptoVizer(PApplet _parent) {
 
     // papplet
     parent= _parent;
 
     // sound system
     minim = new Minim(parent);
-    input = minim.getLineIn(Minim.STEREO,1024);
+    input = minim.getLineIn(Minim.STEREO, 1024);
 
     // fft
     fftLog = new FFT(input.bufferSize(), input.sampleRate());
@@ -41,66 +58,68 @@ class OptoVizer{
     amps = new ArrayList();
   }
 
-  void phase(int _phase){
-    switch(_phase){
-      case 0:
-        one();
-        break;
-        case 1:
-        two();
-        break;
-      default:
-        voids();
+  void phase(int _phase) {
+    switch(_phase) {
+    case 0:
+      one();
+      break;
+    case 1:
+      two();
+      break;
+    default:
+      voids();
     }
   }
 
-  void voids(){;}
+  void voids() {
+    ;
+  }
 
-///////
-  
-  void one(){
+  ///////
+
+  void one() {
     compute();
     plotOne();
   }
 
 
-  void plotOne(){ 
+  void plotOne() { 
     pushMatrix();
-    translate(width/2,0);
+    translate(width/2, 0);
     int cnt = 0;
-    for(Object o:amps){
+    for (Object o : amps) {
       pushMatrix();
-      translate(0,cnt);
+      translate(0, cnt);
       float val = (Float)o;
-      line(-val,0,val,0);
+      line(-val, 0, val, 0);
       popMatrix();
       cnt++;
     }
     popMatrix();
   }
 
-////////
-  
-  void two(){
+  ////////
+
+  void two() {
     compute();
     plotTwo();
   }
 
-  void plotTwo(){
-     int cnt=0;
-     for(Object o:amps){
+  void plotTwo() {
+    int cnt=0;
+    for (Object o : amps) {
       pushMatrix();
-      translate(0,cnt);
+      translate(0, cnt);
       float val = (Float)o;
-      stroke(val);
-      line(0,0,width,0);
+      stroke(val*1.5);
+      line(0, 0, width, 0);
       popMatrix();
       cnt++;
-    } 
+    }
   }
 
   ///////
-  void compute(){
+  void compute() {
 
     //SCALE += ((sslope*SCALAR)-SCALE)/2.0;
 
@@ -109,15 +128,15 @@ class OptoVizer{
 
     float sm = 0;
 
-    for(int i = 0; i < input.bufferSize() - 1; i++){
+    for (int i = 0; i < input.bufferSize() - 1; i++) {
       float base = (input.left.get(i) + input.right.get(i))/2.0;
-      float amp = map(base,levels[0],levels[1],0,SCALE);
-      
-      sm += (amp-sm)/3.0;
+      float amp = map(base, levels[0], levels[1], 0, SCALE);
+
+      sm += (amp-sm)/10.0;
 
       amps.add(sm);
 
-      if(amps.size()>height){
+      if (amps.size()>height) {
         amps.remove(0);
       }
     }
@@ -127,12 +146,12 @@ class OptoVizer{
 
   float averages()[]{
     float [] avg = new float[2];
-    for(int i = 0; i < input.bufferSize() - 1; i++)
-    {
-      float base = (input.left.get(i) + input.right.get(i))/2.0;
-      avg[0] = min(base,avg[0]);
-      avg[1] = max(base,avg[1]);
-    }
-    return avg;
+  for (int i = 0; i < input.bufferSize() - 1; i++)
+  {
+    float base = (input.left.get(i) + input.right.get(i))/2.0;
+    avg[0] = min(base, avg[0]);
+    avg[1] = max(base, avg[1]);
   }
+  return avg;
+}
 }
