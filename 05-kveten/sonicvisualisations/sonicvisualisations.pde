@@ -18,6 +18,11 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
 
+// rozsah min, max >> je lepsi to mozna stelovat na zvukovce
+
+float UROVNE[] = {0.001 ,0.1 };
+
+
 OptoVizer opto;
 
 ////////////////////////

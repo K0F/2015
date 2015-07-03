@@ -178,7 +178,7 @@ class OptoVizer {
 
     //SCALE += ((sslope*SCALAR)-SCALE)/2.0;
 
-    float levels[] = averages();
+    float levels[] = UROVNE;
     slope = 0;
 
     float sm = 0;
