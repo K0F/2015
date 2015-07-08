@@ -22,6 +22,7 @@
 
 float UROVNE[] = {0.001 ,0.1 };
 
+boolean printing = false;
 
 OptoVizer opto;
 
@@ -45,6 +46,14 @@ void draw(){
   rect(0,0,width,height);
   stroke(255,200);
   opto.phase(phase);
+
+  if(printing&&frameCount%120==0)
+    printFrame(true);
+
+  if(printing){
+    fill(255);
+    rect(10,10,10,10);
+  }
 }
 
 void keyPressed(){
@@ -56,7 +65,8 @@ void keyPressed(){
 
   if(key=='p'){
     println("printing..");
-    printFrame(true);
+    printing = !printing;
+
   }
 
 }
