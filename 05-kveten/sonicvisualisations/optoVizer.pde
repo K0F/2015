@@ -41,6 +41,8 @@ class OptoVizer {
   ArrayList amps;
   ArrayList scales;
 
+  PGraphics printer;
+
   OptoVizer(PApplet _parent) {
 
     // papplet
@@ -56,6 +58,9 @@ class OptoVizer {
 
     // vals
     amps = new ArrayList();
+
+    printer = createGraphics(144,630,P2D);
+
   }
 
   void phase(int _phase) {
