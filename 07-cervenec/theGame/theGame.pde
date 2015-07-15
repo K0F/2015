@@ -2,9 +2,9 @@
 
 Hero hero;
 
-int num_leg = 6;
-int num_seg = 7;
-int seg_len = 75;
+int num_leg = 40;
+int num_seg = 10;
+int seg_len = 50;
 
 void setup(){
   size(600,400,OPENGL);
