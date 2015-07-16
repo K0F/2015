@@ -54,12 +54,12 @@ float ratio = 0.75;
 float low = 20;
 float high = 255;
 
-float speed = 400.0;
+float speed = 100.0;
 
 ////////////////////////////////////////////////
 
 void setup(){
-  size(600,400,OPENGL);
+  size(1280,720,OPENGL);
   hero = new Hero();
 }
 
@@ -84,15 +84,19 @@ class Hero{
   }
 
   void draw(){
-    pushMatrix();
-    translate(pos.x,pos.y);
+
+ //   pos.x=mouseX;
+ //   pos.y=mouseY;
+
+//    pushMatrix();
+//    translate(pos.x,pos.y);
 
     for(int i = 0;i<legs.size();i++){
       Leg l = (Leg)legs.get(i);
       l.draw();
     }
 
-    popMatrix();
+//    popMatrix();
   }
 }
 ////////////////////////////////////////////////
@@ -168,7 +172,7 @@ class Segment{
 
   PVector getPos(){
     if(root)
-      return new PVector(0,0);
+      return new PVector(hero.pos.x,hero.pos.y);
 
     PVector ppos = new PVector(parent.pos.x+cos(parent.absRot)*parent.len,parent.pos.y+sin(parent.absRot)*parent.len);
     return ppos;
@@ -219,8 +223,8 @@ class Segment{
         p1.y+=(p2.y-p1.y)/speed;
  
 
-        p1.x+=(0-p1.x)/speed;
-        p1.y+=(0-p1.y)/speed;
+        p1.x+=(width/2-p1.x)/speed;
+        p1.y+=(height/2-p1.y)/speed;
       }
     noStroke();
   }
