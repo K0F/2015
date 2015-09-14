@@ -1,0 +1,1148 @@
+Tento modul si klade za cíl přiblížit čtenářům možnosti programování a psaní
+skriptů na platformě Linux. Hlavní motivací studentů pro zvládnutí látky
+obsažené v tomto modulu by měl být fakt, že řadu programátorských úkolů může
+být velmi snadné vyřešit, pokud se zvolí vhodný postup pro řešení konkrétní
+problematiky. Vhodný postup v tomto případě bude znamenat, udělat to správné
+rozhodnutí, kdy použít některého ze skriptovacích jazyků a kdy zase naopak
+použít programování ve vyšším programovacím jazyce s použitím vhodných
+podpůrných nástrojů.
+Zvolení správného přístupu k řešení problému má pozitivní vliv na zvládnutí
+jakéhokoliv problému. To co jednou metodou programování může být jen obtížně
+dosažitelné a kde řešení zabere programátorovi několik hodin, tak použitím
+odlišné metody může být daný problém vyřešen třeba během několika minut.
+Předpokládá se, že řada čtenářů se již setkala s programováním v jednom
+z klasických programovacích jazyků typu C/C++ a nebo JAVA. To, že se čtenář
+seznámí s možnostmi psaní skriptů a obecně možnostmi skriptovacích jazyků,
+může mít do budoucna velký vliv na urychlení vývoje při řešení specifických
+úkolů. A to vzhledem k faktu, že se mu rozšíří paleta použitelných technologií pro
+řešení programátorských problémů.
+Proč se zabývat programováním v Linuxu? Dalo by se jednoduše říci, že
+programování na platformě Linux se v ledasčem moc neliší od programování na
+jiných platformách a na druhou stranu v některých aspektech se liší zcela zásadně.
+To zásadní je především to, že platforma Linux je přímo jakoby stvořená pro
+programování. Pokud si nainstalujete některou z distribucí Linuxu, budete mít již
+v základu k dispozici potřebné kompilátory, debugery, iterpretery skriptů
+a vývojová prostředí.
+O čem tento modul je.
+Tento modul se snaží čtenáři vysvětlit rozdíly mezi skripty a programy. V modulu
+bude čtenář seznámen se základním přehledem skriptovacích jazyků používaných
+na platformě Linux a budou zde vysvětleny jejich přednosti a nedostatky. V sekci
+věnovanou programování ve vyšších programovacích jazycích bude čtenář
+seznámen s nástroji z balíku GNU toolchain. Budou také prezentovány některé
+techniky jako například jakým způsobem vytvořit daemona (službu) a jakým
+způsobem plánovat spouštění úloh v daný čas.O čem tento modul není.
+Ačkoli by k tomu mohl svádět název modulu, tak tento modul není
+o programování jako takovém. Nebudou zde vysvětlovány žádné základy
+programování a algoritmizace. Naopak se předpokládá, že čtenář již alespoň
+částečně ovládá programování v některém z vyšších programovacích jazyků.
+Ukázky příkladů zde slouží především pro demonstraci konkrétních vlastností
+a ne jako ukázka nejlepšího možného postupu při řešení problému.
+Modul se také zcela záměrně vyhýbá tématice skriptovacích jazyků pro WWW,
+ale zaměřuje se na systémové skripty a to i přes to, že použité skriptovací jazyky
+jsou velmi univerzální a je možné se s nimi setkat velmi často i ve webových
+aplikacích.
+81.2 Skript vs. Program
+V této části textu si vysvětlíme rozdíl mezi programem a skriptem. Rozdělení je
+možné pojmout z řady úhlů pohledu. Pokud se na danou problematiku podíváme
+z pohledu výkonu, budou většinou vítězit klasické programy překládané do
+spustitelné binární podoby. Pokud se na věc podíváme z pohledu rychlosti vývoje,
+zjistíme, že velkou řada problémů lze řešit velice elegantně a rychle na úrovni
+skriptů, byť za cenu pomalejšího zpracování. To ovšem bývá bohatě nahrazeno
+velkou rychlostí implementace
+Dále je nutné si uvědomit, že zatímco program se překládá pouze jednou
+a následně se provádí zkompilovaný kód programu, tak v případě skriptů je skript
+interpretován vždy znovu a znovu ve své zdrojové formě. To ovšem není vždy na
+překážku, u skriptů není nutné je po jejich změně rekompilovat, ale je možné je
+ihned spouštět.
+Pokud jde něco programem udělat velmi jednoduše, lze to samé v řadě případů
+udělat pomocí skriptu ještě jednodušeji a hlavně rychleji.
+Kdy zvolit ten který postup závisí na tom čeho je potřeba dosáhnout. A to by si
+měl každý velmi dobře uvědomovat již v době návrhu řešení. Špatný postup sice
+a priori nevede k selhání, ale bývá mnohem pracnější, složitější na implementaci.
+Z toho také vyplývá i větší náchylnost na výskyt chyb.
+Uvažujme vcelku standardní situaci, kterou musí řešit běžný administrátor
+serverů. Potřebujeme zjistit, kolikrát denně se nám někdo cizí pokouší připojit na
+náš poštovní server, intuitivně asi tušíte, že psát kvůli tomu program je příliš
+těžkopádné. Zvláště když si později ukážeme, že se tento problém dá vyřešit
+velice elegantně na několika řádcích skriptu a to zcela pomíjím fakt, že daný
+skript by se dal zapsat do jediného řádku! Ukázku takového skriptu si ukážeme
+v dalším textu a to hned v několika skriptovacích jazycích.
+Budeme-li uvažovat jiný problém a to realizaci nějaké síťové služby, kde bude
+zásadní výkon. Bude potřeba napsat efektivní a robustní program, bude asi
+nejlepší použít nějaký vyšší programovací jazyk. I když i zde jsou možnosti jak
+vytvářet síťově služby na úrovni skriptovacích jazyků.
+Pokud se podíváme na skripty a programy z dalšího úhlu, tak další velká
+rozdílnost spočívá ve formě použitých příkazu. Zatímco při programování
+převládá volání interních příkazů daného programovacího jazyka a systémová
+volání se používají minimálně, tak v případě psaní skriptů je situace v některých
+případech diametrálně odlišná. Jedná se typicky o případ psaní skriptů pro
+SHELL, kdy se z velké části využívají malé obslužné programy, které jsou
+součástí Linuxových distribucí.
+Značnou pozornost si také zaslouží způsob definice proměnných. Zde je rozdíl na
+první pohled velmi markantní. Na jedné straně stojí vyšší programovací jazyky se
+9silnou typovou kontrolou. Při deklaraci proměnných je třeba zvolit požadovaný
+typ proměnné a následný přístup k dané proměnné je tímto předurčen. Kdežto
+v případě skriptovacích jazyků je situace naprosto odlišná. Proměnné je sice třeba
+v některých skriptovacích jazycích deklarovat, ale datových typů bývá výrazně
+méně. Také vzhledem k absenci překladu dochází ke kontrole datových typů až
+během běhu programu.
+Některá jazyky třeba jako například PERL přistupují k proměnné dle toho, jak je
+na proměnnou odkazováno.
+Pokud se zaměříme například na práci s datovým typem pole v jazyce PERL, pak
+dostáváme následující výsledky.
+Symbol @ značí datový typ pole a symbol $ značí skalární proměnnou. Jak vidno
+PERL přistupuje k definici typů proměnných velmi benevolentně.
+1
+@pole=(”A”,”B”,”C”,”D”,”E”);
+#přiřazení položek seznamu do
+pole.
+2
+@var=@pole[0,2];
+#vytvoření pouze části pole.
+3
+$var=@pole;
+#ve $var bude uložena velikost
+daného pole.
+4
+$var=$pole[2];
+#ve $var bude uložena hodnota
+”C”.
+5
+my ($var1,$var2,$var3)=@pole; #do jednotlivých proměnných se
+uloží jednotlivé položky pole.
+Jak vidíte na uvedeném příkladu, možností jak pracovat s datovým typem pole je
+celá řada. Za povšimnutí stojí především třetí řádek, kde je pěkně vidět, že pokud
+má být výsledkem operace skalární hodnota, tak interpret jazyka změní přístup
+k datovému typu pole a do proměnné uloží jeho velikost, což je jediná skalární
+hodnota, kterou může daná operace vrátit. Stranou samozřejmě zůstává přímý
+přístup na položku pole, viz řádek číslo 4. To je samozřejmě také operace, která
+vrací skalární hodnotu, v tomto případě se ovšem neodkazujeme na datový typ
+pole, ale pouze na konkrétní položku daného pole.
+101.3 Skriptovací jazyky
+Jazyků, které je možné použít k tvorbě skriptů na platformě Linux je celá řada. Při
+jejich výběru bude záležet především na tom, co bude vašim cílem a jak elegantně
+budeme chtít daného cíle dosáhnout.
+Mezi typické zástupce skriptovacích jazyků je možné zařadit: PERL, Python,
+PHP, Ruby, SHELLy SH/BASH, AWK, a případně celou řádku další
+interpretovaných jazyků.
+Je dobré si uvědomit, že skriptovací jazyky lze velmi dobře kombinovat.
+Při tvorbě skriptu můžete velmi jednoduše volat pro jednotlivé podúlohy jiné
+skripty psané jinými skriptovacími jazyky. Stejně tak jsou například SHELLové
+skripty založené na volání rozličných dílčích jednoúčelových programů.
+Jednotlivé skripty nebo programy je také možné řetězit do složitějších celků a to
+tak, že standardní výstup jednoho propojíme se standardním vstupem
+následujícího.
+Mějme situaci, kdy chceme otestovat internetové spojení, ale nemáme dostatek
+času čekat na výsledek. Tak spustíme test a necháme si výsledek poslat emailem.
+nohup ping www.nic.cz –c 5000 | tail –n
+admin@example.org [mailto:admin@example.org]
+4
+| mail
+–s
+“Test“
+„nohup” – zajistí, aby program běžel i po ukončení terminálu
+„ping“ – program ping pro testování odezvy pomocí protokolu ICMP
+„tail“ program který vypíše na výstup požadovaný počet řádku ze vstupu
+„mail“ program který dokáže odeslat email
+Jak si můžete všimnout, vše se dá vyřešit elegantně jedinou příkazovou řádkou.
+To, že je možné takovéto problémy řešit takto elegantně umožňuje ta skutečnost,
+že je možné přesměrovat standardní výstup jednoho programu na standardní vstup
+dalšího. To se v OS Unixového typu dělá pomocí operátoru PIPE (roura) v zápisu
+příkazu/skriptu se s ním setkáváme nejčastěji ve formě znaku „|”
+Ve výše uvedeném příkladu můžete vidět kombinaci hned 4 různých programů,
+které ve formě jediného příkazového řádku splní vaše požadavky. V tomto
+případě se vlastně nejedná ani o skutečný skript. Nicméně na příkladu je krásně
+vidět celá filosofie psaní skriptů a to dělat věci co nejjednodušší a nejefektivnější.
+PIPE (roura) reprezentovaná znakem „|” slouží k přesměrování stdout
+(standardního výstupu) na stdin (standardní vstup). Na české klávesnici je možné
+daný znak napsat stisknutím kombinace: pravý ALT + W.
+11Kromě rour existují i další možnosti přesměrování standardních vstupů a výstupu.
+K tomu slouží speciální znaky „<“ a „>“.
+• „>“ umožňuje přesměrovat standardní výstup do souboru.
+• „>>“ umožňuje přesměrovat standardní výstup a připojit ho na konec
+souboru.
+• „<“ umožnuje přesměrování obsahu souboru na standardní vstup
+• „2>“ umožňuje přesměrovat standardní chybový výstup do souboru.
+• Je také možné přesměrovávat standardní výstupy „stdout“ a „stderr" vzájemně
+mezi sebou.
+A nyní si ukážeme několik příkladů na přesměrování
+Mějme situaci, kdy chceme jednoduše provést záznam o testu pomocí programu
+ping. Není nic jednoduššího než pomocí parametru navolit parametry testu ping
+a přesměrovat jeho výstup do námi zvoleného souboru.
+ping www.nic.cz –s 160 –c 500 > ~/muj_test.txt
+Přesměrování standardního chybového výstupu na standardní výstup a následně
+do souboru „/dev/null“. To znamená, že veškerý výstup bude potlačen, respektive
+zahozen.
+$ muj_program 2>&1>/dev/null
+Toto řešení se používá u periodicky plánovaných akcí, kde nechceme být za
+žádnou cenu informování o průběhu nebo selhání daného programu. Nejprve
+přesměrujeme standardní chybový výstup na standardní výstup a ten následně
+přesměrujeme do speciálního zařízení „/dev/null“. Toto speciální zařízení nedělá
+nic jiného, než že zahodí veškerý standardní vstup.
+Občas se hodí i přesměrování vstupu ze souboru, viz následující skript.
+#!/bin/sh
+while read line;
+do
+echo $line;
+done <./muj_soubor_s_daty.txt
+V jedné z pozdějších částí textu si představíme několik typických zástupců
+skriptovacích jazyku s malou ukázkou jejich použití ve formě jednoduchých
+skriptů.
+12Skripty nejsou vázány na použitou platformu, ale pouze na interpret daného
+skriptu, a proto jsou skripty většinou dobře přenositelné mezi platformami, pro
+které je k dispozici interpret daného skriptovacího jazyka
+131.4 Programovací jazyky
+Tak jako na ostatních OS je možné i v OS Linux tvořit programy v celé řadě
+programovacích jazyků. Mezi nejtypičtější představitele je možné zařadit jazyky
+C, C++, JAVA a podobně. Podpora programovacích jazyků znamená, že pro
+danou platformu existuje patřičný kompilátor a linker.
+Velkou výhodou programování právě na platformě Linux je to, že většina
+nejrozšířenějších distribucí obsahuje velkou řadu potřebných překladačů přímo ve
+svých repositářích. A jak je v Linuxu typické řada z nich je dostupná pod licencí
+GNU, nebo podobnou, která umožňuje téměř neomezené využití daných nástrojů
+a to zdarma.
+Asi nejpoužívanějším překladačem na platformě Linux je bezesporu překladač
+GNU GCC. Je třeba vyzdvihnout, že tento kompilátor je velmi kvalitní a podpora
+architektur je velmi rozsáhlá. GNU GCC podporuje cca 20 standardních
+architektur a celkově více než 60 architektur procesorů pokud zahrneme i méně
+běžné typy. V rodině překladačů GNU je dále možné nalézt překladač pro JAVU
+GNU Java a překladače pro, v dnešní době, méně obvyklé programovací jazyky,
+jakož jsou GNU Ada a GNU Fortran.
+Výhodou programovacích jazyků je skutečnost, že kompilátory provádějí značné
+optimalizace pro konkrétní platformy a tím dále zefektivňují vykonávání daných
+programů.
+Nevýhodou může být především užší provázání s konkrétní platformou a proto
+horší přenositelnost daného programu na jinou platformu.
+141.5 Vývojová prostředí
+Další nespornou výhodou platformy Linux je dostupnost velké řady vývojových
+prostředí pro vývoj aplikací, skriptů a programů.
+Prostředím zde rozumíme, jak komplexní IDE (Integrated Development
+Enviroment), tak i editory, které dokážou ulehčit práci při vývoji, například
+barevným rozlišením syntaxe.
+Mezi IDE běžně dostupná v rámci repositářů jednotlivých distribucí Linuxu patří
+prostředí „KDevelop“, či „Eclipse“. Doporučit se dá také určitě „Netbeans IDE“,
+které je sice potřeba stáhnout ze stránek projektu, ale instalace je velmi
+jednoduchá a toto prostředí určitě patří k tomu nejlepšímu, co je možné získat
+zdarma.
+Jak můžete vidět na následujícím obrázku, možnosti IDE jsou značné a neomezují
+se pouze na zvýraznění syntaxe. Dobré IDE vám poskytne přehled o třídách
+objektů, umožní vám využívat versovací systémy a poskytne bohatou podporu při
+vývoji.
+NetBeans IDE 7.1.1
+Pokud zmiňujeme Linux, určitě se řadě čtenářů vybaví to, že OS Linux lze velmi
+dobře provozovat i bez grafické nadstavby. Ani v tomto případě nemusí být vývoj
+15na této platformě nikterak složitý nebo dokonce nekomfortní. Existuje velké
+množství editorů, které dokážou vývoj programů a skriptů velmi zpříjemnit, ať už
+uživatelsky přívětivým a intuitivním ovládáním v případě například editoru
+„mcedit“, nebo propracovaností ovládání, které je na první pohled složité, ale zato
+velmi efektivní při vývoji v případě editorů „emacs“, „vim“ apod.
+V případě konzolových textových nástrojů nemůžeme ani opomenout kvalitní
+barevné rozlišení syntaxe. Viz následující obrázky, které zachycují barevné
+rozlišení syntaxe skriptu v PERLu v editoru „mcedit“. Barevné zvýraznění
+syntaxe samozřejmě dokážou poskytovat i další editory.
+Zvýraznění syntaxe v editoru mcedit
+161.6 Shrnutí
+Skript vs. Program
+Script vs Program
+program script
+nutná kompilace po každé úpravě
+kompilace pro každou platformu
+zvlášť, případně úprava platformě
+závislého kódu
+spouští se vlastní binární program nekompiluje se / rovnou se spouští
+složitější a delší kód velmi úsporný a jednoduchý kód
+většinou řádově výkonnější kód většinou řádově menší výkon
+stačí nainstalovaný interpret jazyka na
+dané platformě
+skript běží v interpretru jazyka
+Vývojová prostředí
+Na platformě Linux je k dispozici velké množství vývojových prostředí a editorů
+s podporou syntaxe běžných jazyku. Tato prostředí jsou z velké části součástí
+většiny distribucí.
+K dispozici jsou jak prostředí pro textový režim („vim“, „emacs“, „mcedit“,
+„nano“, ...), tak prostředí pro grafické nadstavby OS Linux („KDevelop“,
+„Eclipse“, ...).
+Je možné doinstalovat i další vývojová prostředí, jako například velmi povedené
+a populární prostředí „NetBeans IDE“.
+171.7 Ověření znalostí
+Zde vás čeká několik otázek, které vám pomohou ověřit vaše nově nabyté
+znalosti.
+1. Jak se obecně liší programy a skripty z hlediska výkonu?
+2. Co je třeba provést bezprostředně po úpravě programu před jeho
+spuštěním?
+3. Co musí daný systém obsahovat, aby bylo možné spouštět skripty
+konkrétního programovacího jazyka?
+4. Jaké editory znáte pro terminálové rozhraní OS Linux?
+5. Jaká vývojová prostředí znáte pro grafické rozhraní OS Linux?
+Ř EŠENÍ
+1. Programy bývají mnohem výkonnější, ale je většinou pracnější je napsat.
+2. Program je třeba znovu zkompilovat a nainstalovat pomocí („configure“,
+„make“, „make instar“).
+3. OS musí obsahovat interper daného skriptovacího jazyka.
+4. „vi“, „vim“, „emacs“, „mcedit“, „nano“, ... .
+5. „Eclipse“, „KDevelop“, „NetBeans“, ... .
+182 Programování v Linuxu – Skripty
+2.1 Úvod
+V této kapitole si nejprve představíme základní nástroje pro práci v OS Linux, ty
+se nám budou hodit pro pochopení a psaní skriptů v SHELLu. Kromě psaní
+skriptů v SHELLu, si dále představíme několik typických interpretrových jazyků,
+které jsou hojně využívány na platformě Linux.
+Skriptovací jazyky neslouží jen pro tvorbu běžných uživatelských skriptů, ale na
+těchto jazycích je založena velká řada systémových nástrojů.
+Tato kapitola by měla čtenáři, který se ještě nesetkal se skriptovacími jazyky, dát
+přehled o tom jaké základní skriptovací jazyky je možné použít a co je možné
+pomocí nich realizovat.
+192.2 Nástroje
+Psaní skriptů především pro SHELLy se velmi často opírá a celou řádku
+programů, které jsou dostupné ve většině distribucí Linuxu. V následujícím textu
+se podíváme na nejdůležitější z nich, abyste snadněji porozuměli následujícím
+příkladům.
+Pokud byste zde čekali kompletní výpis parametrů daných příkladů a popis jejich
+použití, musím vás bohužel zklamat a odkázat vás na manuálové stránky daných
+programů. V řadě případů se jedná o velmi komplexní programy s mnoha
+desítkami parametrů. Nicméně následující přehled by měl sloužit, jako vodítko
+pro ty kdo se ještě s OS Linux ve větší míře nesetkali.
+příkaz / operátor
+echo použití / význam
+vypíše konec souboru nebo
+standardního vstupu na standardní
+výstup
+vypíše začátek souboru nebo
+standardního vstupu na standardní
+výstup
+skript běží v interpretru jazyka
+umožní postupný výpis souboru nebo
+standardního vstupu
+propracovanější verze programu
+„more“
+vypíše zadaný text na obrazovku
+seq vygeneruje posloupnost čísel
+wc program spočítá počet řádků, slov
+cp kopíruje soubor nebo adresář
+mv přesouvá soubor nebo adresář
+mkdir vytvoří adresář
+rm odstraní soubor nebo adresář
+ls výpis obsahu adresáře
+velmi pokročilý nástroj pro filtrování
+textu
+velmi pokročilý nástroj pro
+vyhledávání v systému souborů
+pipe (roura), přesměrování
+standardního výstupu na standardní
+výstup
+přesměrování obsahu souboru na vstup
+cat
+tail
+head
+more
+less
+grep
+find
+|
+<
+20>
+přesměrování výstupu do souboru
+zabrání ukončení procesu při ukončení
+rodičovského procesu (zavření
+terminálu)
+archivační nástroj
+nohup
+tar
+212.3 SH/BASH
+Jedná se o asi nejrozšířenější SHELLy na platformě linux. V případě SHELLu
+BASH se jedná o rozšíření původního SHELLu SH (Bourne SHell). Odtud
+vyplývá i jméno SHELLu BASH (Bourne Again SHell).
+Na Linuxové platformě můžete narazit i na další SHELLy, jakými jsou například:
+csh, ksh, zsh, atd.
+U řady čtenářů může na mysli vytanout otázka, co je to vlastně ten SHELL zač.
+SHELL je typicky UNIXové prostředí, které se chová jako interpret příkazového
+řádku.
+Nejčastěji se se SHELLem setkáváme jako s interpretem příkazového řádku,
+nenechte se ale zmást, v tomto případě se jedná o plnohodnotný skriptovací jazyk.
+Příkazy je možné jak zadávat na příkazovou řádku tak i zapsat do souboru
+a spouštět danou sadu příkazů jako skript. Samozřejmostí jsou řídící struktury,
+funkce a další programové konstrukce.
+Mějme jednoduchý úkol a to vytvoření 10 ti podadresářů v aktuálním adresáři.
+Vše se dá zvládnout elegantně na jediném řádku. Příkaz může vypadat třeba
+následovně:
+for i in `seq 1 10`; do mkdir ./adresar_$i; done;ls -l;
+To samé lze samozřejmě zapsat přehledněji ve formě skriptu. Skript má dále tu
+výhodu, že je možné ho spouštět opakovaně.
+#!/bin/bash
+for in `seq 1 10` do
+mkdir ./adresar_$i;
+done
+ls –l
+Skriptům je samozřejmě možné předávat parametry a to tak, že ve skriptu se na ně
+odkážeme pomocí symbolu „$“ a pořadovým číslem parametru. Tzn. „$1“ je první
+parametr, „$2“ druhý, atd.
+Nyní můžeme předávat parametry. Náš skript nyní vytvoří libovolný počet
+podadresářů. Skript zavoláme jednoduše s požadovaným parametrem.
+$./mujscript.bash 10
+Upravený skript (obsah souboru „mujscript.sh“):
+#!/bin/bash
+for in `seq 1 $1` do
+mkdir ./adresar_$i
+22done
+ls –l
+Proměnné v SHELLu
+Proměnné je možné rozdělit na systémové a programové proměnné. Budeme se
+zde zabývat především definicí programových proměnných. To jsou ty, které
+budeme používat uvnitř skriptů.
+Je dobré si uvědomit, že je možné modifikovat obsah jakékoliv proměnné!
+Vytvoření proměnné
+moje_proměnná=moje_hodnota
+Přístup k proměnné
+echo $moje_proměnná
+Zrušení proměnné
+unset moje_proměnná
+Numerické operace s proměnnou
+$((moje_proměnná + 4))
+Přesměrování standardního výstupu do proměnné
+moje_proměnná=`cat /etc/passwd |grep root`
+232.4 AWK
+AWK je typickým příkladem jazyka, který vznikl s jasným úmyslem. Tento jazyk
+/ nástroj je zaměřen především na zpracování textových dat. Ať již ve formě
+textových souborů nebo proudů textových dat.
+Je dobré si uvědomit, že AWK můžeme používat buď jednoúčelově na příkazové
+řádce v kombinaci s dalšími programy, anebo můžeme napsat skript, který
+budeme využívat opakovaně.
+Pro AWK dokonce existuje překladač do jazyka C, což dává skriptům napsaným
+v AWK vysoký výkonový potenciál.
+Chceme získat statistiku nezdařených přihlášení k serveru, pod uživatelem „root“.
+Za pomocí skriptu v AWK je řešení více než elegantní.
+Typický záznam v logu „/var/log/secure“ vypadá následovně:
+Apr
+1 09:57:07 My_Linux sshd[15160]: pam_unix(sshd:auth):
+authentication \
+failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=124.74.19.106
+user=root
+A nyní skript, který dokáže dané záznamy zpracovat a vyhodnotit.
+1
+2
+3
+4
+5
+6
+7
+8
+8
+9
+10
+11
+12
+#!/usr/bin/awk -f
+/failure/{
+if( $14 == "user=root" ){
+split($13,pole,"=");
+stat[pole[2]]++;
+}
+}
+END{
+for(i in stat){
+print i, stat[i];
+}
+}
+Spuštění skriptu a výsledek:
+[root@MyLinux skripty]# ./root_logins.awk /var/log/secure
+88.255.50.111  ̈ 1186
+124.74.19.106
+52
+58.211.252.149
+8
+Skript kontroluje, zda se v daném textu vyskytují řádky, které obsahují slovo
+„failure“ viz řádek číslo 3. Dále se kontroluje, že na daném řádku je na čtrnácté
+pozici uvedeno „user= root“, což identifikuje pokus o přihlášení s uživatelským
+jménem „root“. Pokud tomu tak je, pak je extrahována adresa IP vzdálené strany
+z dat na pozici 13 a je inkrementováno počítadlo výskytů v asociativním poli.
+V sekci END, která se spouští až na konci skriptu, dojde k vypsání páru IP adresa
+a počet výskytů na standardní výstup.
+242.5 PERL
+PERL dnes již určitě patří mezi jazyky, které jsou na ústupu. Ale to nikterak
+nesnižuje jeho významnost a důležitost. Na PERLu je založené velké množství
+systémových skriptů a nástrojů. Stejně tak napojení PERLu na repositáře CPAN,
+je třeba uvažovat jako velmi významnou součást celé filosofie tohoto
+programovacího jazyka. Hlavní myšlenka spočívá v tom dělat věci, co možná
+nejjednodušeji to jde a pokud možno velice efektivně. Smysl repositářů CPAN
+spočívá v tom, že to co už jednou bylo vymyšleno a sepsáno formou skriptů
+PERLu není třeba vymýšlet a programovat znovu.
+Za povšimnutí stojí, že například jeden z nejrozšířenějších antispamů, kterým je
+bezesporu „Spamassassin“, je z velké části napsán právě v jazyce PERL.
+Mějme stejný příklad jako v případě skriptovacího jazyka AWK. Výsledný skript
+může vypadat například následovně. Pro větší přehlednost díky zvýraznění
+syntaxe je daný skript uveden jako obrázek.
+Skript root_logins.pl
+25Výstup:
+[root@MyLinux skripty]#
+IP:58.211.252.149
+IP:88.255.50.111
+IP:124.74.19.106
+./root_logins.pl /var/log/secure
+pocet pokusu: 8
+pocet pokusu: 1186
+pocet pokusu: 52
+Ačkoli je PERL typickým zástupcem skriptovacích jazyků tak od verze 5
+obsahuje podporu pro objektově orientované programování
+262.6 Python
+Jedná se o moderní skriptovací jazyk, který je v dnešní době velice oblíbený. Do
+jisté míry nahrazuje programování v jazyce PERL.
+Python je dynamický moderní interpretovaný jazyk, který svými vlastnostmi
+přesahuje hranice pouhého skriptovacího jazyka. Jazyk Python totiž umožňuje
+vytváření plnohodnotných aplikací včetně grafického rozhraní.
+Za velkou výhodu jazyka Python bývá označována ta skutečnost, že je velice
+jednoduchý na naučení a produktivnost při psaní programů je na vysoké úrovni.
+S tím samozřejmě souvisí dostupnost velké škály knihoven.
+Mějme stejný příklad jako v případě skriptovacích jazyků AWK a PERL.
+Výsledný skript může vypadat například následovně. Pro větší přehlednost díky
+zvýraznění syntaxe je daný skript uveden opět jako obrázek.
+Skript root_logins.py
+Výstup:
+[root@MyLinux skripty]#
+IP: 58.211.252.149
+IP: 124.74.19.106
+IP: 88.255.50.111
+./root_logins.py /var/log/secure
+pocet pokusu: 8
+pocet pokusu: 52
+pocet pokusu: 1186
+272.7 Shrnutí
+Jak jste zajisté poznali, jsou skriptovací jazyky velmi vhodné pro hromadné
+zpracování dat. Typicky pro data ve formě různých záznamů o životě systému.
+Vděčí za to tomu, že původní myšlenkou bylo mimo jiné zpracování rozsáhlých
+finančních dat.
+Skripty se neomezují ovšem pouze na zpracování textů, ale obsahují i podporu pro
+interakci s uživatelem. Nejvýznamnější zaměření na interakci s uživatelem
+najdeme pravděpodobně u „skriptovacího“ jazyka Python, který má v sobě
+zahrnutou podporu i pro vytváření GUI.
+SHELL
+Pokud se zaměříme na skripty v SHELLu typu SH/BASH, zjistíme, že jsou velice
+vhodné pro jednoduché úlohy a ideálně tam kde se kombinuje celá řádka různých
+nástrojů dohromady.
+Tam, kde budeme zpracovávat velké množství dat, začne SHELL ztrácet
+především na výkonu při práci se souborovým systémem.
+AWK
+AWK se výborně hodí pro zpracování textů a skripty AWK velmi dobře slouží
+i jako podprogramy pro SHELLové skripty.
+AWK nepodporuje složitější struktury, objekty a řízení programu. Stejně tak
+oproti ostatním jazykům má mnohem menší možnosti v oblasti práci
+s proměnnými a datové typy jsou mnohem více limitovány.
+PERL
+Vnikl jako rozšíření jazyka AWK proto aby odstranil jeho nedostatky, jedná se
+o jeden z nejrozšířenějších skriptovacích jazyků a proto je dobré, alespoň částečně
+tento jazyk ovládat. Jeho smyslem je dělat věci co nejjednodušeji a ve verzi 5 byl
+jazyk rozšířen i o podporu objektového programování.
+Dnes je na ústupu a je nahrazován jazykem Python. Pokud je kód napsaný
+v PERLu delší, bývá většinou značně složitý a nepřehledný.
+28Python
+Jedná se o moderní a oblíbený jazyk. Mluví se o něm jako o velmi snadno
+naučitelném jazyce. Je to velice komplexní jazyk pokud jde o otázku jeho
+upotřebitelnosti. Je v něm kladen velký důraz na přehlednost a snadnost údržby
+kódu.
+292.8 Ověření znalostí
+Zde vás čeká dalších několik otázek, které vám pomohou ověřit vaše nově nabyté
+znalosti.
+1. K čemu je v OS Linux dobrý symbol „|”? Jak se jmenuje a jak se požívá?
+2. Je třeba skripty před spuštěním kompilovat?
+3. Jak zajistíte, aby váš skript, který standardně zapisuje chybová hlášení na
+standardní chybový výstup, zapsal tyto chybové zprávy do souboru?
+4. Jaký skriptovací jazyk použije pro analýzu přístupů k vašemu poštovnímu
+serveru na platformě Linux?
+5. Jaké vývojové prostředí použijete pro psaní skriptů v AWK a jaké
+v případě Pythonu?
+Ř EŠENÍ
+1. Jedná se o rouru (pipe). Slouží k propojení standardního výstupu jednoho
+programu na standardní vstup druhého programu. Použití je například
+následující:
+cat /etc/passwd | grep root
+2. Ne není, je potřeba mít pouze nainstalovaný potřebný interpret daného
+jazyka.
+3. Je třeba přesměrovat standardní chybový výstup do souboru. Standardní
+výstup bude i nadále váš terminál.
+$ ./muj_script.pl 2>~/muj_soubor_se_zaznamem.txt
+4. Použít můžete samozřejmě jakýkoliv skriptovací jazyk, který vám bude
+vyhovovat, není na závadu mít kód o něco delší, ale zato rychleji napsaný
+a se stejnou funkcionalitou.
+5. Stejně jako v předchozím případě, tato volba je jen na vás. Je dobré si
+uvědomit, že existuje celá řada vývojových prostředí, která se hodí pro
+rozličné jazyky buď více anebo méně, ale skript napíšete v kterémkoliv
+z nich. Nejdůležitější je, aby se vám v daném prostředí dobře pracovalo.
+303 Programování v Linuxu – Programy
+3.1 Úvod
+V této části se seznámíme se sadou nástrojů GNU toolchain. Opět zde nepůjde
+o to naučit vás programovat v nějakém konkrétním programovacím jazyce, ale jde
+o to ukázat, že vaše programy lze velmi snadno posunout na vyšší úroveň
+v případě použití patřičných nástrojů.
+Jak si v dalším textu ukážeme, je velmi snadné zajistit vygenerování patřičných
+skriptů pro konfiguraci a kompilaci vašeho programu na cílové platformě.
+Ukážeme si, že to není vůbec složité, že vám to zabere pouze pár minut
+a výsledný efekt je ohromující.
+Pokud jste se již setkali s instalací programů v Linuxu, konkrétně přes příkazovou
+řádku a známý používali jste známý postup „./configure, make, make install“, asi
+jste si říkali, co to dalo programátorovi práce, aby kompilace a instalace do vámi
+zvolené destinace, případně deinstalace programu probíhala tak hladce. Věřte
+tomu, že se to v řadě případů dá zvládnout za pár minut a to právě s použitím
+nástrojů GNU toolchain. Jak, to si ukážeme v následujícím textu.
+313.2 Nástroje – GNU toolchain
+Jedná se o skupinu nástrojů pro programování, které byly vytvořeny v rámci
+projektu GNU
+Součástí jsou projekty: „GCC“, „GDB“, „make“, „autotools“ (Autoconf,
+Autoheader, Automake, Libtool) a „Binutils“
+Význam těchto projektů je nezanedbatelný už jen z toho důvodu, že tyto nástroje
+jsou používány pro vývoj jader systémů Linux a BSD, případně softwaru pro
+embeded platformu.
+Výhodou těchto nástrojů je fakt, že neslouží pro vývoj pouze velkých projektů, ale
+už při užití těchto nástrojů u vašich jednoduchých aplikací, je možné tyto
+aplikace, nejen jednodušeji vyvíjet, ale s minimálním úsilím jim vdechnout
+spoustu nových vlastností z hlediska konfigurace, kompilace a instalace na
+různých platformách.
+Pomocí nástrojů obsažených v GNU toolchain je totiž velmi snadné připravit váš
+program pro distribuci.
+323.3 Nástroje – GCC
+GNU CC je velmi významný překladač, který obsahuje velmi rozsáhlou podporu
+různých architektur. Tato sada překladačů obsahuje podporu pro více než 60
+různých procesorových architektur.
+Standardní verze kompilátoru „GCC“ obsahuje podporu pro programovací jazyky,
+jakož jsou: Ada, C, C++, Fortran, Go, Java, Objective-C, Objective-C++.
+Distribuce překladače „GCC“ v sobě navíc obsahuje standardní knihovny pro
+jazyky Ada, C, Java.
+Nejjednodušší příklad použití gcc by mohl vypadat například následovně:
+gcc hello_world.c –o hello_world
+„GCC“ neudělá nic jiného než, že přeloží program zapsaný v „hello_world.c“
+a vytvoří jeho spustitelnou binární podobu „hello_world“. Samozřejmě za
+předpokladu, že program neobsahuje chyby.
+333.4 Nástroje – make
+Program „make“ slouží pro zjednodušení překladu zdrojových kódů programu do
+výsledného binárního programu.
+Nástroj „make“ se při své běhu řídí instrukcemi, které čte ze souboru „Makefile“
+Od souboru „Makefile“ se vyžaduje, aby obsahoval popis všech závislostí, které
+mohou nastat při překladu programu. Struktura závislostí může být u větších
+projektů velmi složitá, což by v případě ručního vytváření souboru „Makefile“
+vedlo k pravděpodobným chybám. Proto se pro vytváření souboru „Makefile“
+velmi často používá automatický nástroj „automake“.
+Obecná struktura souboru Makefile:
+#Komentář
+cíl: závislost
+příkaz 1
+příkaz 2
+.
+.
+.
+příkaz N
+Konkrétní struktura bude vypadat například takto:
+#HelloWorld MakeFile
+helloworld: helloworld.o
+cc –o $@ $<
+helloworld.o: helloworld.c
+cc –c –o $@ $<
+.PHONY: clean
+clean:
+rm –f helloworld helloworld.o
+Soubor „Makefile“ umožňuje definovat celou řadu užitečných akcí. Mezi ty
+základní patří: „install“, „clean“, a „unsintall“. Dosti častý bývá i výsky akcí,
+které řídí překlad pro jednotlivé platformy jako například „make linux“ anebo
+„make windows“.
+Použití je velmi jednoduché:
+make clean
+make
+make install
+make uninstall
+343.5 Nástroje – GNU Binutils
+V tomto případě se jedná o soubor jednoduchých nástrojů pro podporu
+programování. Jak je z následující tabulky patrné, neomezuje se balík GNU
+Binutils pouze na platformu Linux, ale obsahuje podporu i pro systémy Microsoft
+Windows. Mezi hlavní programy souboru GNU Binutils patří především GNU
+assembler a GNU linker.
+Soubor nástrojů GNU Binutils slouží pro vytváření a údržbu binárních programů,
+knihoven a manipulaci s objektovým kódem. Používá se ve spojení s „GCC“
+a „make“.
+Následující tabulka obsahuje přehled nástrojů obsažených v GNU Binutils.
+Obsah programového balíku GNU Binutils
+Program Popis
+as assembler
+ld linker
+gprof profiler
+addr2line nm konverze adres ma soubory a řádky
+vytvoření, extrahování a modifikace
+archivu
+demanglovací jazyk pro C++ symboly
+vytváření DLL knihoven pro
+Microsoft Windows
+konverze objektových dat do formátu
+NetWare Loadable Module (NLM)
+výpis symbolů z objektových dat
+objcopy kopírování objektových dat
+objdump výpis informací o objektových datech
+ranlib vytváření indexů pro archivy
+readelf zobrazení obsahu ELF souborů
+size výpis velikostí sekcí a celku
+strings zobrazení tisknutelných řetězců
+strip vymazání symbolů z objektových dat
+kompilátor pro ressource data (objekty
+v souborech Microsoft Windows)
+Program
+c++filt
+dlltool
+nlmconv
+windres
+353.6 Nástroje – GDB
+Jedná se o standardní nástroj pro ladění programu. Programátorovi poskytuje
+možnost sledovat chování programu v jednotlivých částech jeho běhu. Takto
+může programátor sledovat program a odhalovat velice rychle jakékoliv
+nestandardní chování.
+„GDB“ dává programátorovi možnost za běhu programu modifikovat jeho
+proměnné, spouštět funkce a modifikovat obsah paměti.
+Pomocí nástroje GDB je možné analyzovat chování vzdálených systémů. To
+znamená, že GDB může běžet na počítači programátora a laděný program může
+být spouštěn například na vzdáleném serveru
+GDB se například využívá i ve vývojovém prostředí „Netbeans IDE“ pro vývoj na
+platformě Linux. Následující obrázek zachycuje výchozí konfiguraci nástrojů
+„Netbeans IDE“. Kromě konfigurace debuggru GDB si můžete všimnout využití
+celé řady dalších součástí projektu GNU.
+Nástroje GNU v NetBeans
+363.7 Nástroje – autotools
+Sada nástrojů „autotools“ se skládá z následujících částí:
+• GNU autoconf – vygeneruje soubor „configure“ na základě informací
+v souboru „configure.ac“
+• GNU automake – slouží k vygenerování přenosných souborů „Makefile“
+• GNU libtool – Slouží pro vytváření statických a dynamických knihoven
+• Gnulib – pomáhá zlepšovat přenositelnost programů kompilovaných využitím
+nástrojů „autoconf“ a „automake“.
+Následující obrázek zachycuje strukturu použití jednotlivých nástrojů GNU od
+vytvoření základních konfiguračních souborů až po sestavení vlastního binárního
+programu.
+GNU toolchain
+373.8 Nástroje – configure / make / make install
+A nyní se již dostáváme k vlastní konfiguraci,kompilaci a instalaci programů
+v OS Linux.
+Tím, že máme program připraven a distribuován spolu se skripty, které byly
+vytvořeny pomocí balíčku GNU toolchain, máme velmi jednoduchou práci.
+Nejprve spustíme skript „configure“ a zadáme mu požadované parametry. Asi
+nejdůležitějším parametrem bude bezesporu cílová destinace pro instalaci
+programu. Ta se mění pomocí parametru --prefix. Výsledkem je vygenerování
+souboru „Makefile“.
+Poté již můžeme přistoupit k vlastní kompilaci a sestavení programu pomocí
+nástroje „make“. Spuštění se provede jednoduše zadáním příkazu „make“ bez
+parametrů ve složce s programem. Jako prerekvizita musí být nejprve úspěšně
+vygenerován soubor „Makefile“, viz předchozí krok.
+A nakonec je potřeba nainstalovat program do požadované složky zadáním
+příkazu „make install“.
+Pokud by bylo potřeba daný program někdy odinstalovat, je možné toto provést
+jednoduše zadáním příkazu „make uninstall“
+Pokud by bylo potřeba provést čistou kompletní kompilaci programu znova, je
+možné vyčistit zdrojovou složku pomocí zadání příkazu „make clean“.
+Velkou výhodou při kompilaci programů je skutečnost, že pokud je potřeba
+program z nějakého důvodu rekompilovat, jsou rekompilovány pouze změněné,
+nebo prozatím nezkompilované části, což například v případě kompilace velkých
+projektů jakož je Linuxové jádro, nebo projekt Openoffice ušetří velké množství
+času
+.
+383.9 Ověření znalostí
+Zde vás čeká dalších několik otázek, které vám pomohou ověřit vaše nově nabyté
+znalosti.
+1. Co je obsahem GNU toolchain?
+2. Jak nainstalujete program, pokud máte k dispozici zdrojové kódy a skripty,
+které byli připraveny nástroji GNU toolchains?
+3. Jaké dva soubory musíte sami připravit pro nástroje GNU toolchain
+(nezapočítáváme-li zdrojový kód a použití nástroje „autoscan“)?
+4. K čemu slouží nástroj GDB?
+5. Je možné programy
+odinstalovat?
+instalované
+ze
+zdrojových
+kódů
+korektně
+Ř EŠENÍ
+1. Součástí je „GCC“, „GDB“, „make“, „autotools“ (Autoconf, Autoheader,
+Automake, Libtool) a „Binutils“
+2. Postup bude následující:
+1. ./configure --prefix=/adresar/kam/se/ma/program//nainstalovat
+2. make
+3. make install
+3. Je třeba připravit soubory „configure.ac“ a „Makefile.am“.
+4. Jedná se o GNU debugger. Tento nástroj slouží k odhalování chyb při
+vývoji programu.
+5. Ano, pokud je program instalován z takového zdroje, který obsahuje
+i patřičné skripty pro odinstalaci programu, tedy například ty připravené
+pomocí GNU toolchain. Provádí se typicky voláním „make uninstall“ ve
+složce se zdrojovými kódy programu.
+394 Programování v Linuxu – Co se jinam
+nevešlo
+4.1 Další možnosti ladění programů – valgrind,
+a electric fence,
+Při psaní větších nástrojů se vám zajisté budou hodit i další pokročilé nástroje pro
+usnadnění hledání chyb ve vašich programech.
+„electricfence“ – program, který dokáže v případě chyby paměti zastavit
+vykonávání instrukce a ve spoluprácí s GDB zobrazit patřičnou řádku zdrojového
+kódu.
+„valgrind“ – tento program vám pomůže diagnostikovat chyby, které se týkají
+chybného přístupu do paměti, případně vám umožní analyzovat úniky paměti.
+Nesmíme zapomenout ani na schopnost ladění více vláknových programů.
+Uvažujme například následující kód, je v něm zjevná chyba. Program se snaží
+zapsat na 11 pozici do pole, pro které byla alokována paměť pouze pro 10
+položek.
+Program obsahující chybný přístup do paměti
+Kompilace tohoto programu proběhne bezchybně. Ovšem již při prvním zpuštění
+program selže s a vypíše chybu:
+*** glibc detected *** ./main: free(): invalid next size (fast):
+0x0000000013d64010 ***
+40***
+glibc
+detected
+0x0000000013d64040 ***
+***
+./main:
+free():
+invalid
+pointer:
+Takovéto hlášení chyby neposkytuje dostatečné informace pro snadné odhalení
+chyb v rozsáhlejším kódu. Je proto nanejvýš vhodné použít nějaký mocnější
+nástroj jakým je například „valgrind“. Výsledek ladícího výpisu z programu
+„valgrind“ je zachycen na následujících řádcích.
+[ondra@F16 programs]$ valgrind ./program_with_error
+==28384== Memcheck, a memory error detector
+==28384== Copyright (C) 2002-2010, and GNU GPL'd, by Julian Seward
+et al.
+==28384== Using Valgrind-3.6.1 and LibVEX; rerun with -h for
+copyright info
+==28384== Command: ./program_with_error
+==28384==
+0,
+0, 1,
+0, 1, 2,
+0, 1, 2, 3,
+0, 1, 2, 3, 4,
+0, 1, 2, 3, 4, 5,
+0, 1, 2, 3, 4, 5, 6,
+0, 1, 2, 3, 4, 5, 6, 7,
+0, 1, 2, 3, 4, 5, 6, 7, 8,
+0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+==28384== Invalid write of size 4
+==28384==
+at 0x4008AA: main (main.cpp:9)
+==28384== Address 0x4c37068 is 0 bytes after a block of size 40
+alloc'd
+==28384==
+at 0x4A06A27: operator new[](unsigned long)
+(vg_replace_malloc.c:305)
+==28384==
+by 0x40088C: main (main.cpp:7)
+==28384==
+==28384== Invalid read of size 4
+==28384==
+at 0x4008C2: main (main.cpp:11)
+==28384== Address 0x4c37068 is 0 bytes after a block of size 40
+alloc'd
+==28384==
+at 0x4A06A27: operator new[](unsigned long)
+(vg_replace_malloc.c:305)
+==28384==
+by 0x40088C: main (main.cpp:7)
+==28384==
+0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+==28384==
+==28384== HEAP SUMMARY:
+==28384==
+in use at exit: 0 bytes in 0 blocks
+==28384==
+total heap usage: 1 allocs, 1 frees, 40 bytes
+allocated
+==28384==
+==28384== All heap blocks were freed -- no leaks are possible
+==28384==
+==28384== For counts of detected and suppressed errors, rerun
+with: -v
+==28384== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 2
+from 2)
+41Jak si můžete ve výpisu všimnout, díky spuštění pomocí programu „valgrind“
+došlo k tomu, že byl program spuštěn až do konce i přes kritickou chybu v alokaci
+paměti.
+Velmi důležitou schopností programu „valgrind“ je také to, že dokáže analyzovat
+alokaci a uvolňování paměti a tím pomoci eliminovat úniky paměti. To je
+obzvláště důležité u dlouho běžících programů a daemonů, kdy by v případě
+existence úniků paměti mohlo dojít k alokaci zbytečného množství paměti anebo
+až k vyčerpání veškeré volné paměti.
+424.2 Služby – démoni
+Určitě si vybavíte některé procesy, které jsou spouštěny již při spuštění systému
+a běží až do jeho ukončení. Takové procesy mají typicky za úkol obsluhu událostí
+v OS a je celkem jedno zda se jedná o obsluhu diskového pole, nebo zasílání
+webových stránek uživatelům.
+Službě typicky běžící v OS UNIX/Linux na pozadí se říká Daemon. Dle toho jsou
+většinou i pojmenovány dané programy. Ke jménu souboru se připojuje písmenko
+„d“, které značí to, že se jedná o démona. Viz například: „sshd“, „httpd“,
+„mysqld“, ....
+V následujícím textu si ukážeme, jak je možné vytvořit process, který bude
+daemonem.
+1. Nejprve je třeba zavolat systémové volání „fork()“, a ukončit rodičovský
+proces. Tímto krokem by se měl náš program odpoutat od SHELLu, ze
+kterého byl spuštěn.
+2. Je třeba zavolat systémové volání „setsid()“. Toto volání vytvoří novou
+skupinu procesů a učiní náš proces jediným členem této skupiny a zároveň
+převezme řízení nad touto skupinou.
+3. Je třeba zavolat znovu systémové volání „fork()“, a ukončit rodičovský
+proces. Díky tomu, že aktuální proces není řídícím procesem skupiny, tak
+nemá ani žádný řídící terminál.
+4. Je dobré změnit pracovní adresář procesu na adresář „/“, nebo na nějaký
+jiný bezpečný adresář. Jedná se zde o to, aby pracovní adresář nebyl
+v nějaké části souborového systému, která může být během běhu procesu
+odpojena, typicky třeba NFS souborový systém.
+5. Nyní je třeba zavolat systémové volání „umask(0)“. Tímto dosáhneme
+vynulování masky zabezpečení pro vytváření souboru a adresářů. To nám
+dovolí nastavit práva pro vytvářené soubory dle našeho uvážení.
+6. V poslední fázi je třeba zavřít všechny otevřené popisovače souborů.
+Standardní postup je buď uzavřít pouze standardní deskriptory 0,1 a 2
+(„stdin“, „stdout“ a „stderr") anebo vytvořit smyčku, která se pokusí
+uzavřít všechny možné deskriptory, které může proces mít (zjistí se
+maximální možný počet popisovačů a provede se smyčka od 0 do tohoto
+počtu).
+7. Nyní máme připraveného daemona a může následovat zbytek kódu
+procesu.
+Daemona můžeme vytvořit nejenom jako klasický program, ale výše uvedená
+pravidla se vztahují jak na programy tak skripty.
+Kód funkce pro vytvoření démona v jazyce C/C++ může vypadat následovně:
+43Na následujícím obrázku je zachycena ukázka kódu Daemona v jazyce C/C++
+Vytvoření démona
+444.3 Automatické spouštění a plánování
+Programy a skripty není nutné spouštět pouze ručně, ale velmi často je třeba
+plánovat spuštění programu nebo skriptu v nějaký konkrétní čas. K tomu je
+v Linuxu opět k dispozici celá řada nástrojů. Mezi nejpoužívanější patří příkaz
+„at“ a „cron“. Příkaz „at“ se ve většině případů používá pro plánování
+jednorázových akcí a daemon „cron“ se naopak používá především pro opakované
+akce.
+454.4 Automatické spouštění a plánování - at
+„at“ – příkaz slouží pro jednorázové spouštění příkazů v daný čas, příkazů je
+možné plánovat libovolné množství. Krom programu „at“ je možné používat
+i další příkazy, které slouží pro obsluhu příkazů zadaných příkazem „at“.
+„atq“ – zobrazení seznamu naplánovaných událostí.
+Následující příkaz ukazuje naplánování zaslání emailu po uplynutí 5 minut.
+Samozřejmě místo zaslání emailu, je možné tímto způsobem spustit téměř
+jakoukoliv akci.
+[ondra@F16 ~]$ echo '"My MSG"| mail -s MSG mail@example.org'| at
+now + 5min
+Kontrola zda je náš příkaz ve frontě.
+[ondra@F16 ~]$ atq
+job 1 at 2012-04-01 19:15
+Ještě nenastal čas pro spuštění úlohy.
+[ondra@F16 ~]$ date
+Sun Apr 1 19:11:57 CEST 2012
+464.5 Automatické spouštění a plánování - cron
+„cron“ – tento program, nebo přesněji daemon, slouží pro periodické spouštění
+procesů v naplánovaný čas. Typicky je v OS Linux používán jako hlavní
+plánovač.
+Program „cron“ se opírá o definici úloh v souboru „/etc/crontab“. Na úrovni
+jednotlivých uživatelů jsou úlohy definovány v adresáři „/var/spool/“.,
+Struktura souboru „crontab“ je zachycena na následujícím obrázku.
+Struktura časových údajů v souboru „/etc/crontab“
+• Na první pozici se zapisují minuty, ve kterých má být daný skript zpuštěn.
+• Na druhou pozici se zapisují hodiny, ve kterých má být daný skript zpuštěn.
+• Na třetí pozici se zapisují dny v měsíci, ve kterých má být daný skript zpuštěn.
+• Na čtvrtou pozici se zapisují měsíce, ve kterých má být daný skript zpuštěn.
+• Na pátou pozici se zapisují dny v týdnu, ve kterých má být daný skript zpuštěn
+V řadě systémů je definována následující struktura adresářů:
+/etc/cron/
+/etc/cron.hourly
+/etc/cron.daily
+/etc/cron.weekly
+/etc/cron.monthly
+Již z názvu adresářů je celkem jasné k čemu dané adresáře slouží. První slouží pro
+obecné plánování událostí, soubory musejí být ve stylu „crontab“. Ostatní
+adresáře fungují tak, že skripty do nich vložené jsou periodicky spouštěny. A to
+jednou denně, jednou týdně a jednou za měsíc. Dané skripty nemusejí být nijak
+upravovány a stačí je pouze vložit, nebo na ně vytvořit odkaz v daném adresáři.
+474.6 Shrnutí
+Ladění programů
+Ladící nástroje vám mohou v řadě případů velmi ulehčit odlaďování programů
+a hledání chyb. V případě, že se budete programování věnovat více, patrně
+dospějete k tomu, že je třeba používat více různých nástrojů. Pro běžné ladění
+programů a krokování budete pravděpodobně používat velmi rozšířený GNU
+debugger GDB v kombinaci s „electricfence“, nebo podobným programem.
+Pokud se dostanete do situace, kdy budete programovat nějakého démona, který
+poběží velmi dlouho, zajisté uvítáte detekci úniků paměti v nástroji „valgrind“.
+Plánování
+Pro plánování jednorázových akcí vám velmi dobře poslouží nástroj „at“
+Pro periodické plánování se vám bude hodit daemon „cron“. Buď můžete umístit
+své skripty do adresářů „/etc/cron.hourly, /etc/cron.daily, /etc/cron/weekly,
+/etc/cron.monthly” a nebo definovat spouštení umístěním konfiguračního souboru
+do adresáře „/etc/crond“.
+Daemoni
+Pokud budete vytvářet nějakou službu, která by měla běžet většinu času, kdy bude
+systém spuštěn, zauvažujte o tom, zda nemá cenu napsat danou službu jako
+démona. Není to složíté a stačí dodržet pouze několik pravidel.
+Daemon nemusí být pouze program, ale démona můžete vytvořit i jako skript.
+
+Z předmluvy básníkovy
+Pro mne nebyla poesie cílem, jejž si kdo určuje, nýbrž vášní, a
+s vášněmi třeba zacházeti s největší šetrností, nelze jich vzněcovati
+svévolně v naději nepatrných výhod neb ještě nepatrnějšího úspěchu
+u obecenstva.
+E. A. Poe
+V omluvu překladatele
+Básně tyto jsou hluboké a mihotavé jak sen, tajuplné a bezvadné jak
+křišťal; překlad básní těchto tak zúmyslných a tak koncentrovaných
+může býti lahodným snem — ale může býti jedině snem.
+Charles Baudelaire
+6J. V. Sládkovi
+v oddanosti bratrské, v pamět společných snah a stejné práce
+7Havran
+V půlnoci kdys v soumrak čirý
+chorý bděl jsem sám a sirý,
+nad věd zapomněných svazky
+starými jsem skláněl líc —
+Skoro schvátilo mne spaní,
+an ruch lehký znenadání
+ozval se jak zaklepání
+na mé dveře — a zas nic.
+„Návštěva to,“ pravím k sobě,
+„klepá na dveře, víc nic —
+pouze to a pranic víc.“
+Jasně pamět má mi praví:
+Prosinec byl mrazný, tmavý,
+mroucích uhlů reflex žhavý
+odrážel se od dlaždic.
+Toužil jsem po kuropění,
+marně hledal těchy v čtení,
+na Lenoru zapomnění,
+andělů již na tisíc
+zářnou děvu ‚Leonora‘,
+andělů zve na tisíc —
+Zde již nemá jména víc.
+Purpurné se clony hnuly,
+hedvábem svým zavzdychnuly,
+plní se a vlní mysl
+bázně také neznajíc;
+takže srdce si dodávám:
+„Návštěva,“ si předříkávám,
+„o vstup žádá,“ — v útřest vstávám —
+„bloudí u mých okenic, —
+návštěva...“ — si předříkávám —
+8„ždá vchod u mých okenic, —
+to je to – a pranic víc.“
+Nabyla má duše síly,
+neváhal jsem ani chvíli:
+„Pane,“ děl jsem, „nebo paní,
+nemyslete na to víc;
+pravda jest, mne zmohlo spaní,
+neslyšel jsem znenadání
+vaše lehké zaklepání
+na své dveře, věřte, víc
+nebyl jist jsem, že vás slyším —“
+Otevru své dveře — nic —
+Venku tma a pranic víc.
+Dlouho do tmy patřím snivý,
+stojím, duše má se diví,
+v strachu sny si, jaké nikdo
+neměl ještě, spřádajíc.
+Ticho kolem nezrušeno;
+leč v tom tichu jedno jméno,
+‚Leonora‘, vysloveno
+šeptem znělo a víc nic.
+Já je šeptal: „Leonoro!“
+echem znělo zmírajíc —
+Pouze to a pranic víc.
+Nazpět v komnatu se vracím,
+žhavou duší v sny se ztrácím,
+zas to slyším zaklepání
+hlasněji než dřív a víc.
+„Jistě,“ pravím, „jistě kdosi
+klepá v okně, o vstup prosí,
+podívám se na to, cosi
+straší u mých okenic —
+9Ticho, srdce! Vyšetřit chci
+taj ten u svých okenic. —
+To je vítr a nic víc.“
+Otevru své okno rázem,
+vířivým tu letem na zem
+snesl se a kráčí Havran
+statný, jakých není víc;
+nevšim si mne trochu ani,
+nestanul, dál bez váhání
+kráčel, jako pán či paní,
+tak měl přitom vážnou líc.
+Nad Pallady vletěl sochu
+nad dveřmi, měl vážnou líc —
+Vzletěl, used, a nic víc.
+Ebenový pták ten v zjevu
+obřadném tak, v přísném hněvu
+do úsměvu trochu zjasnil
+moji truchlou, smutnou líc.
+„Ač máš chochol ostříhaný,“
+děl jsem, „nejsi sketa planý,
+stará šelmo z Noci brány
+břehem jejím těkajíc,
+rci své panské jméno v Pekle
+břehy Pluta těkajíc!“
+Na to Havran: „Nikdy víc!“
+S žasem na toho zřím ptáka,
+nemehlo, jak jasně kdáká,
+ač z té jeho odpovědi
+nemohl jsem si vybrat nic. —
+Však to dlužno uvážiti,
+zřídka se to stane v žití,
+ptáka že je možno zříti,
+10jenž by sletěl z okenic,
+ptáka nebo zvíře, které
+na sochu si sedajíc
+zvalo by se: ‚Nikdy víc!‘
+Pták na klidné soše seděl,
+pouze jedno slovo věděl,
+jeho duše v něm jen byla
+jiné řeči neznajíc.
+Neřek více slovo jiné,
+nezčeřil své peří stinné,
+až já zavzdych: „Tak vše mine —
+druhů měl jsem na tisíc,
+i ten zítra opustí mne
+Nadějí jak na tisíc.“
+A pták pravil: „Nikdy víc!“
+Vhodnou řečí tou když zrušil
+kolem ticho, já jsem tušil:
+Bohatství to jeho celé,
+neví chudák dál již nic;
+jistě stihla jeho pána
+Osudu za ranou rána,
+takže duše jeho štvána,
+v refrén jeden zoufajíc
+pohřbila svou všecku Naděj,
+v truchlý refrén zoufajíc,
+v refrén: „Nikdy, nikdy víc!“
+Posud Havran ve svém zjevu
+žal můj měnil do úsměvu,
+lenošku teď posunul jsem
+k dveřím, k soše, jemu v líc;
+zvolna klesám do sametu,
+duma dumu stíhá v letu,
+11v myšlenkách mi sjede z retů:
+„Šelma ta, zlo zvěstujíc,
+co chce příšerná a šerá
+šelma ta zlo zvěstujíc,
+krákající: ‚Nikdy víc!‘“
+V domněnky jsem upad zcela,
+duše má se zamlčela,
+zřítelnice ptáka zřela
+v srdce moje hárajíc;
+zvědět víc má chuť se nesla,
+skráň má pohodlně klesla
+v měkký samet mého křesla,
+lampy zář kam šlehajíc,
+fialový samet křesla
+osvítila šlehajíc,
+kam nesedne Ona víc!
+Ve vzduchu se vůně chvěla,
+jak by z kaditelnic spěla
+Serafů, jichž kroků echo
+jizbou znělo zmírajíc.
+„Bídný!“ křiknu, „v tvoji těchu
+anděly Bůh seslal v spěchu,
+by tvá duše v moři vzdechů
+nepenthes to lokajíc
+na Lenoru zapomněla
+sladký mok ten lokajíc.“
+Na to Havran: „Nikdy víc!“
+„Proroku!“ dím, „čárných zraků! —
+Věštče, ďáble nebo ptáku! —
+Satan slal tě, či Bouř z mraků
+štvala tě se vztekajíc
+bídného, však duše chladné,
+12v okouzlené kraje zrádné,
+k tomu krbu, Strach kde vládne,
+rci mi pravdu a ni
