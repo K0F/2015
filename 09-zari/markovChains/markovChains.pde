@@ -26,14 +26,14 @@ import java.io.*;
 
 Basnik verlaine;
 
-String FILENAME = "text.txt";
-String SPLIT_TOKENS = " []<>()\"„“‘1234567890.,-$</";
+String FILENAME = "ursonate.txt";
+String SPLIT_TOKENS = " []<>()\"„“‘1234567890-$</";
 boolean DEBUG = false;
 
 boolean SPEAKING = false;
 
 int PITCH = 40; 
-int VOICE_WPM = 60; 
+int VOICE_WPM = 40; 
 
 String text[];
 String raw;
@@ -53,7 +53,7 @@ void setup(){
 
   size(480,320,P2D);
 
-  verlaine = new Basnik("-v mb-us2 -p "+PITCH+" -s "+VOICE_WPM);
+  verlaine = new Basnik("-v mb-cz2 -p "+PITCH+" -s "+VOICE_WPM);
 
   nodes = new ArrayList();
 

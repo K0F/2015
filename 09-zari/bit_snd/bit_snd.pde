@@ -46,8 +46,8 @@ void setup(){
 void evolve(){
   for(int x = 0;x<buffer.length;x++){
     float smpl = map((float)ToInt(buffer[x]),100000.0,-100000.0,-1,1);
-    lpf[x] += ((smpl+sin(x/((frameCount)%80+1.0)))/4.0-lpf[x])/2.0;
-    lpf[(x+1)%BUFFER_SIZE] += (lpf[x]-lpf[(x+1)%BUFFER_SIZE])/10.0;
+    //lpf[x] += ((smpl+sin(x/((frameCount)%80+1.0)))/4.0-lpf[x])/2.0;
+    lpf[x] += (smpl-lpf[x])/200.0;
     buf.setSample(0,x,lpf[x]);
     for(int y = 0;y<BIT_DEPTH;y++){
     if(random(255)<(sin(frameCount/100.0)+1.0)*127 )
