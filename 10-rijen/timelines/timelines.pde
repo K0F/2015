@@ -4,7 +4,7 @@ ArrayList items;
 int NUM = 10;
 String names[] = {"alfa","beta","gamma","delta","epsilon","pi"};
 boolean md = true;
-
+int last = 0;
 
 void setup(){
   size(800,600,P2D);
@@ -30,6 +30,7 @@ void draw(){
 
 
 class Item{
+  
   int id;
   int x,y,w,h,ox,oy;
   PGraphics skin;
@@ -73,10 +74,18 @@ class Item{
   }
 
   void draw(){
-    if(over())
+   
+    if(last==id && md){
+      x = mouseX-ox;
+      y = mouseY-oy;
+    }
+
+    
+    if(over()){
       noTint();
-    else
+    }else{
       tint(255,120);
+    }
 
     image(skin,x,y);
   }
@@ -85,6 +94,10 @@ class Item{
     if(mouseX>x&&mouseX<x+w&&mouseY>y&&mouseY<y+h){
       ox = mouseX-x;
       oy = mouseY-y;
+
+      if(md)
+      last = id;
+
       return true;
     }else{
       return false;
