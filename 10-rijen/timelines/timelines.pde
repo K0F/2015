@@ -1,9 +1,8 @@
 
 
 ArrayList items;
-int NUM = 10;
 String names[] = {"alfa","beta","gamma","delta","epsilon","pi"};
-boolean md = true;
+boolean md = false;
 int last = 0;
 
 void setup(){
@@ -14,7 +13,7 @@ void setup(){
   for(int i = 0 ; i < names.length;i++)
     items.add(new Item(names[i]));
 
-  textFont(createFont("Semplice Regular",8,false));
+  textFont(createFont("Semplice Regular",6,false));
 }
 
 void draw(){
@@ -30,7 +29,7 @@ void draw(){
 
 
 class Item{
-  
+
   int id;
   int x,y,w,h,ox,oy;
   PGraphics skin;
@@ -74,17 +73,18 @@ class Item{
   }
 
   void draw(){
-   
+
     if(last==id && md){
       x = mouseX-ox;
       y = mouseY-oy;
-    }
-
-    
-    if(over()){
-      noTint();
     }else{
-      tint(255,120);
+
+
+      if(over()){
+        noTint();
+      }else{
+        tint(255,120);
+      }
     }
 
     image(skin,x,y);
@@ -95,9 +95,8 @@ class Item{
       ox = mouseX-x;
       oy = mouseY-y;
 
-      if(md)
-      last = id;
 
+      last = id;
       return true;
     }else{
       return false;
