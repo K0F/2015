@@ -92,7 +92,8 @@ void draw(){
     for(int i = first ; i >= 0;i--){
       output.remove(i);
     }
-  }  background(0);
+  }
+  background(0);
 
   walker = walker.pickNext();
   result += walker.word+" ";
