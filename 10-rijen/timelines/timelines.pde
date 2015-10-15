@@ -3,6 +3,8 @@
 ArrayList items;
 int NUM = 10;
 String names[] = {"alfa","beta","gamma","delta","epsilon","pi"};
+boolean md = true;
+
 
 void setup(){
   size(800,600,P2D);
@@ -23,14 +25,13 @@ void draw(){
   for(int i = 0 ; i < items.size();i++){
     Item tmp = (Item)items.get(i);
     tmp.draw();
-
   }
 }
 
 
 class Item{
   int id;
-  int x,y,w,h;
+  int x,y,w,h,ox,oy;
   PGraphics skin;
   PImage assets[];
   String name;
@@ -43,6 +44,9 @@ class Item{
 
     w = (int)textWidth(name)+32+16;
     h = 16;
+
+    ox = 0;
+    oy = 0;
 
     assets = new PImage[2];
     assets[1] = loadImage("arrow.png");
@@ -69,19 +73,31 @@ class Item{
   }
 
   void draw(){
-  if(over())
-  noTint();
-  else
-  tint(255,120);
+    if(over())
+      noTint();
+    else
+      tint(255,120);
 
     image(skin,x,y);
   }
 
   boolean over(){
-    if(mouseX>x&&mouseX<x+w&&mouseY>y&&mouseY<y+h)
-    return true;
-    else
-    return false;
+    if(mouseX>x&&mouseX<x+w&&mouseY>y&&mouseY<y+h){
+      ox = mouseX-x;
+      oy = mouseY-y;
+      return true;
+    }else{
+      return false;
+    }
   }
 
+}
+
+
+void mousePressed(){
+  md = true;
+}
+
+void mouseReleased(){
+  md = false;
 }
