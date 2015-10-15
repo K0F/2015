@@ -69,8 +69,19 @@ class Item{
   }
 
   void draw(){
+  if(over())
+  noTint();
+  else
+  tint(255,120);
+
     image(skin,x,y);
-    //text(name,x,y);   
+  }
+
+  boolean over(){
+    if(mouseX>x&&mouseX<x+w&&mouseY>y&&mouseY<y+h)
+    return true;
+    else
+    return false;
   }
 
 }
