@@ -3,8 +3,8 @@
 ArrayList neurons;
 
 int NUM = 200;
-int NUMC = 2;
-int BORDER = 10;
+int NUMC = 5;
+int BORDER = 150;
 
 void setup(){
   size(800,800,P2D);
@@ -102,9 +102,9 @@ check:
     rectMode(CENTER);
     rect(pos.x,pos.y,3,3);
 
-    stroke(0,127);
     for(int i = 0 ; i < connections.size();i++){
       Connection c  = (Connection)connections.get(i);
+    stroke(0,c.weight*127/2.0);
       line(pos.x,pos.y,c.b.pos.x,c.b.pos.y);
     }
   }
@@ -121,7 +121,7 @@ class Connection{
     a=_a;
     b=_b;
     d = dist(a.pos.x,a.pos.y,b.pos.x,b.pos.y);
-    weight = 0.5;
+    weight = random(0,2);
   }
 
 
