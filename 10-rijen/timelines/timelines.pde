@@ -6,14 +6,14 @@ boolean md = false;
 int last = 0;
 
 void setup(){
-  size(800,600,P2D);
+  size(800,900,P2D);
 
   items = new ArrayList();
 
   for(int i = 0 ; i < names.length;i++)
     items.add(new Item(names[i]));
 
-  textFont(createFont("Semplice Regular",6,false));
+  textFont(createFont("Semplice Regular",8,false));
 }
 
 void draw(){
@@ -95,7 +95,7 @@ class Item implements Comparable{
 
     image(skin,x,y);
     fill(255);
-    text(name+id,x+2,y+10);
+    text(name+id,x+10,y+12);
   }
 
   void attract(){
