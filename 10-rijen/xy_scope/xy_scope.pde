@@ -7,7 +7,7 @@ void setup()
 {
   size(512,512,OPENGL);
 
-  frameRate(60); 
+  frameRate(30); 
   minim = new Minim(this);
 
   // use the getLineIn method of the Minim object to get an AudioInput
@@ -16,6 +16,9 @@ void setup()
 
 void draw()
 {
+  if(frameCount<10)
+  frame.setLocation(10,10);
+
   fill(0,180);
   noStroke();
   rect(0,0,width,height);

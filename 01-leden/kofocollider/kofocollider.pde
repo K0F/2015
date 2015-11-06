@@ -111,7 +111,7 @@ class Editor{
   PVector dimm;
 
   float w =0,wc =0;
-  boolean execute = false;
+  boolean execute = true;
   float fade = 0;
   String name;
 
@@ -186,7 +186,7 @@ class Editor{
         String ttmp = (String)lines.get(ii);
         tmp+=ttmp;
       }
-
+      println(tmp);
       sclang(tmp);
       execute = false;
     }
@@ -248,6 +248,10 @@ void keyPressed(){
     String tmp = (String)editor.lines.get(editor.currln);
     editor.lines.set(editor.currln,tmp.substring(0,editor.carret)+""+key+tmp.substring(editor.carret,tmp.length()));
     editor.carret++;
+  }
+
+  if(key==' '){
+    editor.execute=true;
   }
 
   editor.carret = constrain(editor.carret,0,((String)editor.lines.get(editor.currln)).length());
