@@ -6,11 +6,11 @@ float guess[];
 float best[] = {1,1};
 
 float err = 10000000.0;
-float res = 1;
+float res = 50;
 
 void zadani(){
   for(int i = 1 ; i < source.length;i++){
-    source[i] = (i)%50;
+    source[i] = (sin(i/10.0)+1.0)*25;
   }
 
 
@@ -19,6 +19,9 @@ void zadani(){
 
 void setup(){
   size(320,240);
+
+
+  textFont(createFont("Semplice Regular",8,false));
 
   source = new float[width];
   guess = new float[width];
@@ -38,17 +41,25 @@ void draw(){
   background(0);
   plot();
 
-  for(int i = 1 ; i<100;i++){
-    res = (sin(frameCount/(i+0.0))+1.0)*100.0;
-    float neu = err(frameCount,res);
+iterate:
+  for(int i = 1 ; i<10000;i+=100){
+    //  res = (sin(frameCount/(i+0.0))+1.001)*25;
+    res=random(1000.0);
+    float neu = err(i+frameCount,res);
 
     if(err > neu){
-      best[0] = frameCount;
+      best[0] = i+frameCount;
       best[1] = res;
 
       err = neu;
+      break iterate;
     }
   }
+
+  fill(255);
+  text("err: "+err,10,20);
+  text("seed: "+best[0],10,30);
+  text("res: "+best[1],10,40);
 
 }
 
@@ -59,19 +70,17 @@ void plot(){
     line(i,source[i-1]+height/3-50,i,source[i]+height/3-50);
   }
 
-  noiseSeed((int)best[0]);
   for(int i = 1 ; i < guess.length;i++){
-    line(i,noise(i-1/best[1])*100.0-50+(height/3*2),i,noise(i/best[1])*100.0-50+(height/3*2));
+    line(i,sin((i-1+best[0])/best[1])*25+(height/3*2),i,noise((i+best[0])/best[1])*25+(height/3*2));
   }
 }
 
 float err(int seed,float res){
 
   float err =0;
-  noiseSeed(seed);
 
   for(int i = 0;i<source.length;i++){
-    guess[i] = noise(i/res)*100;
+    guess[i] = sin(i+(seed)/res)+1.0*25;
   }
 
   for(int i = 0;i<source.length;i++){
