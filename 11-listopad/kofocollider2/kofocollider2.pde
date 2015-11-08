@@ -30,14 +30,20 @@ ArrayList editors;
 Timeline timeline;
 int currEdit = 0;
 
+void mousePressed(){
+  editors.add(new Editor("syn"+editors.size(),mouseX,mouseY));
+  currEdit = editors.size()-1;
+}
 
 void setup(){
 
   size(800,800,P2D);
+  
+  textFont(loadFont("AnonymousPro-11.vlw"),11);
 
   editors = new ArrayList();
 
-  editors.add(new Editor("beta"));
+  editors.add(new Editor("syn"+editors.size()));
   currEdit=0;
 
   timeline = new Timeline(8);

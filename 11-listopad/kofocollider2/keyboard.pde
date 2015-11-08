@@ -25,6 +25,11 @@ void keyPressed(){
 
   try{
 
+    if(keyCode==TAB){
+      currEdit++;
+      currEdit=currEdit%editors.size();
+    }
+
     if(keyCode==17){
       editor.execute=true;
     }

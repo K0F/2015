@@ -33,33 +33,40 @@ class Editor{
   boolean execute = false;
   float fade = 0;
   String name;
+  boolean over = false;
 
   Editor(String _name){
     name = _name+"";
-    lines = new ArrayList();
-    textFont(loadFont("AnonymousPro-11.vlw"),11);
-
     pos = new PVector(100,100);
+    generate();
+  }
 
+  Editor(String _name,int _x,int _y){
+    name = _name+"";
+    pos = new PVector(_x,_y);
+    generate();
+  }
+
+  void generate(){
+    lines = new ArrayList();
     lines.add("~"+name+".ar(2);");
-    lines.add("~"+name+"={");
-    lines.add("");
-    lines.add("};");
-    lines.add("~"+name+".fadeTime=5;");
+    lines.add("~"+name+".fadeTime=2;");
     lines.add("~"+name+".quant=2;");
+    lines.add("~"+name+"={");
+    lines.add("var sig = LFSaw.ar(43.2);");
+    lines.add("Splay.ar(sig,0.5,0.2);");
+    lines.add("};");
     lines.add("~"+name+".play;");
   }
 
+  boolean over(){
+      if(mouseX>pos.x-20&&mouseY>pos.y-20&&mouseX<pos.x+dimm.x+40&&mouseY<pos.y+dimm.y+20)
+      return true;
+      else
+      return false;
+  }
+
   void render(){
-
-    try{
-      //carret = constrain(carret,0,((String)lines.get(currln)).length()-1);
-
-      fade += execute ? 255 : -15;
-      fade = constrain(fade,0,255);
-
-      pushMatrix();
-      translate(pos.x,pos.y);
 
       float maxW = 0;
       for(int i =0 ; i < lines.size();i++){
@@ -69,8 +76,28 @@ class Editor{
 
       dimm = new PVector(maxW,lines.size()*rozpal);
 
+
+    over = over();
+    
+    //if(over)
+    //currEdit = editors.indexOf(this);
+
+    try{
+      //carret = constrain(carret,0,((String)lines.get(currln)).length()-1);
+
+      fade += execute ? 255 : -15;
+      fade = constrain(fade,0,255);
+
+      pushMatrix();
+      translate(pos.x,pos.y);
       rectMode(CORNER);
-      stroke(255,45);
+      
+      if(currEdit==editors.indexOf(this)){
+      stroke(#ffcc00);
+      }else{
+      stroke(255,127);
+
+      }
       fill(255,15);
       rect(-20,-20,dimm.x+40,dimm.y+20);
 
@@ -85,10 +112,9 @@ class Editor{
         rect(-20,-20,dimm.x+40,dimm.y+20);
         //rect(-5,i*rozpal+2,w+5,-rozpal);
 
-        if(i==currln){
+        if(i==currln && currEdit==editors.indexOf(this)){
           w = textWidth(curr);
           wc = textWidth(curr.substring(0,carret));
-
 
 
 
