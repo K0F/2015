@@ -132,7 +132,7 @@ class Editor{
       boolean active = (mouseX>sh-3+pos.x&&mouseX<tw+4+sh-3+pos.x&&mouseY<pos.y-20&&mouseY>pos.y-20-16)?true:false;
       if(active)
         answer=i;
-        field_rozpal[i] = sh;
+      field_rozpal[i] = sh;
       sh += tw+6;
     } 
 
@@ -212,9 +212,12 @@ class Editor{
         tw = textWidth(args[i]);
         boolean active = (mouseX>sh-3+pos.x&&mouseX<tw+4+sh-3+pos.x&&mouseY<pos.y-20&&mouseY>pos.y-20-16)?true:false;
 
-
-        fill(active?#ff1111:0);
+        if(active)
+          fill(#ff1111);
+        else
+          fill(#ff1111,vals[i]*127);
         rect(sh-3,-20,tw+4,-16);
+
         /* 
            if(active && mousePressed){
            mousePressed=false;
