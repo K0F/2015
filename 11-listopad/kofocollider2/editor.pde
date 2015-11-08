@@ -43,8 +43,9 @@ class Editor{
   boolean over = false;
 
   float HH = 0;
+float maxW = 0;
 
-  Editor(String _name){
+Editor(String _name){
     name = _name+"";
     pos = new PVector(100,100);
     generate();
@@ -68,6 +69,8 @@ class Editor{
     //prepare arguments line
     String targs = "";
     for(int i = 0; i < args.length;i++){
+    envelopes.add(new Envelope(this,args[i],i));
+      
       if(i==args.length-1)
         targs+=args[i];
       else
@@ -121,17 +124,16 @@ class Editor{
 
   void drawEnvelopes(){
     for(int i = 0 ; i< envelopes.size();i++){
-      Envelope e = (Envelope)envelopes.get(i);
-      t.draw();
+      Envelope en = (Envelope)envelopes.get(i);
+        en.draw();
+        vals[i] = en.output;
     }
-
   }
 
   void render(){
-
     sendVals();
 
-    float maxW = 0;
+    maxW=0;
     for(int i =0 ; i < lines.size();i++){
       String curr = (String)lines.get(i);
       maxW = max(maxW,textWidth(curr));
@@ -201,20 +203,23 @@ class Editor{
 
         fill(active?#ff1111:0);
         rect(sh-3,-20,tw+4,-16);
-
-        if(active&&mousePressed){
+       /* 
+        if(active && mousePressed){
           mousePressed=false;
+          active=false;
           envelopes.add(new Envelope(this,args[i],i));
+          Envelope curr = (Envelope)envelopes.get(envelopes.size()-1);
+          curr.recording=true;
         }
+        */
 
         fill(255);
         text(args[i],sh,-24);
         sh += tw+6;
       }
+      drawEnvelopes();
 
       popMatrix();
-
-      drawEnvelopes();
 
       if(execute){
         String tmp="";
@@ -239,7 +244,9 @@ class Editor{
         execute(tmp);
         execute = false;
       }
-    }catch(Exception e){println("errr!");}
+    }catch(Exception e){println("editor draw errr!");}
+
+
   }
 
 }
