@@ -28,13 +28,26 @@ NetAddress sc;
 
 ArrayList editors;
 Timeline timeline;
+ArrayList envelopes;
+
 int currEdit = 0;
+
+
+void init(){
+  frame.removeNotify();
+  frame.setUndecorated(true);
+  frame.addNotify();
+
+  super.init();
+}
 
 void setup(){
 
-  size(800,800,P2D);
+  size(1600,800,P2D);
   
   textFont(loadFont("AnonymousPro-11.vlw"),11);
+
+  envelopes = new ArrayList();
 
   editors = new ArrayList();
 

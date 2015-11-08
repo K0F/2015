@@ -48,6 +48,7 @@ class Timeline{
     line(pos,height-5,pos,height-10);
 
     timer++;
+
     /* 
        if(timer%(int)div==0){
        editor.generate();     

@@ -1,37 +1,54 @@
 
 
-void mousePressed(){
-  editors.add(new Editor("syn"+editors.size(),mouseX,mouseY));
-  currEdit = editors.size()-1;
-}
 /*
+   void mousePressed(){
+   editors.add(new Editor("syn"+editors.size(),mouseX,mouseY));
+   currEdit = editors.size()-1;
+   }
+
+   void mouseDragged(){
+   println("starting recording of envelope");
+   Editor tmp = (Editor)editors.get(currEdit);
+   Envelope tenv = (Envelope)tmp.envelopes.get(tmp.envelopes.size()-1);
+   tenv.recording = true;
+   }
+
+   void mouseReleased(){
+   Editor tmp = (Editor)editors.get(currEdit);
+   Envelope tenv = (Envelope)tmp.envelopes.get(tmp.envelopes.size()-1);
+
+   try{
+   tenv.recording = false;
+   tenv.recorded = true;
+
+   }catch(Exception e){
+   println("envelope creation err");
+   }
+   }
+
+
+ */
+
+
 
 void mouseDragged(){
-  println("starting recording of envelope");
-  Editor tmp = (Editor)editors.get(currEdit);
-  Envelope tenv = (Envelope)tmp.envelopes.get(tmp.envelopes.size()-1);
-  tenv.recording = true;
-}
-
-void mouseReleased(){
-  Editor tmp = (Editor)editors.get(currEdit);
-  Envelope tenv = (Envelope)tmp.envelopes.get(tmp.envelopes.size()-1);
-
-  try{
-    tenv.recording = false;
-    tenv.recorded = true;
-
-  }catch(Exception e){
-    println("envelope creation err");
+  for(int i = 0 ; i < envelopes.size();i++){
+    Envelope en  =(Envelope)envelopes.get(i);
+    if(en.over){
+      en.recording = true;
+    }
   }
 }
 
-
-*/
+void mouseReleased(){
+  for(int i = 0 ; i < envelopes.size();i++){
+    Envelope en  =(Envelope)envelopes.get(i);
+      en.recording = false;
+  }
+}
 
 class Envelope{
 
-  Editor parent;
   ArrayList vals;
   int pointer = 0;
   String name;
@@ -42,28 +59,54 @@ class Envelope{
   boolean recorded;
   boolean recording;
 
+  PVector dim;
 
-  Envelope(Editor _parent,String _name,int _ctlId){
-    parent = _parent;
+  boolean over();
+
+  ArrayList connections;
+  
+
+
+  Envelope(){
     vals = new ArrayList();
-    ctlId = _ctlId;
-    name = _name;
 
+    pos = new PVector(0,height-200);
+    dim = new PVector(200,100);
 
     pointer = 0;
-    pos = new PVector(0,height-200);
     println("casting envelope: "+ name);
+
+    connections = new ArrayList();
+  }
+
+  void record(){
+    if(recording)
+      vals.add(map(mouseY,pos.y,pos.y+dim.y,1,0));
+
+  }
+
+  
+  void over(){
+    if(mouseX>pos.x&&mouseX<pos.x+dim.x&&mouseY>pos.y&&mouseY<pos.y+dim.y)
+    return true;
+    else
+    return false;
+
   }
 
 
-
   void draw(){
-
     
+    over = over();
+
+    record();
+
+/*
     vals.add(noise((frameCount+(editors.indexOf(parent)*1000.0))/(100.0*(ctlId+1.0))) );
 
     if(vals.size()>200)
       vals.remove(0);
+*/
 
     noFill();
     stroke(255,127);
@@ -81,6 +124,4 @@ class Envelope{
     fill(255);
     noStroke();
   }
-
-
 }
