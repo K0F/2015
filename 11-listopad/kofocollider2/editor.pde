@@ -32,6 +32,7 @@ class Editor{
 
   String [] args = {"freq","amp","dur","mod","x","y","z"};
   float [] vals = new float[args.length];
+  float [] field_rozpal = new float[args.length];
 
   float fadetime = 2;
   boolean playing = true;
@@ -60,7 +61,6 @@ class Editor{
   void generate(){
 
     envelopes = new ArrayList();
-
 
     pre = new ArrayList();
     lines = new ArrayList();
@@ -132,7 +132,8 @@ class Editor{
       boolean active = (mouseX>sh-3+pos.x&&mouseX<tw+4+sh-3+pos.x&&mouseY<pos.y-20&&mouseY>pos.y-20-16)?true:false;
       if(active)
         answer=i;
-        sh += tw+6;
+        field_rozpal[i] = sh;
+      sh += tw+6;
     } 
 
     return answer;
@@ -210,7 +211,7 @@ class Editor{
 
         tw = textWidth(args[i]);
         boolean active = (mouseX>sh-3+pos.x&&mouseX<tw+4+sh-3+pos.x&&mouseY<pos.y-20&&mouseY>pos.y-20-16)?true:false;
-  
+
 
         fill(active?#ff1111:0);
         rect(sh-3,-20,tw+4,-16);
