@@ -40,6 +40,7 @@ void init(){
 
   super.init();
 }
+////////////////////////////////////////////////////
 
 void setup(){
 
@@ -48,10 +49,12 @@ void setup(){
   textFont(loadFont("AnonymousPro-11.vlw"),11);
 
   envelopes = new ArrayList();
+  for(int i = 100;i<width;i+=250)
+  envelopes.add(new Envelope(i,50));
 
   editors = new ArrayList();
 
-  editors.add(new Editor("syn"+editors.size()));
+  editors.add(new Editor("syn"+editors.size(),100,200));
   currEdit=0;
 
   timeline = new Timeline(8);
@@ -62,6 +65,7 @@ void setup(){
   osc = new OscP5(this,12000);
   sc = new NetAddress("127.0.0.1",57120);
 }
+////////////////////////////////////////////////////
 
 void draw(){
   if(frameCount==5)
@@ -74,8 +78,18 @@ void draw(){
     tmp.render();
   }
 
+for(Object o : envelopes){
+    Envelope tmp = (Envelope)o;
+    tmp.draw();
+  }
+
+
   timeline.render();
 }
+
+
+////////////////////////////////////////////////////
+
 
 void msg(String obj,String key,float val){
   osc.send("/oo",new Object[] {obj,"set",key,val},sc);

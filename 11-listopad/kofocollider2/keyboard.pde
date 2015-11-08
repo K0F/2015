@@ -53,8 +53,6 @@ void keyPressed(){
     if(keyCode==DOWN){
       editor.currln++;
       editor.currln=constrain(editor.currln,0,editor.lines.size()-1);
-
-
     }
 
     if(keyCode==UP){

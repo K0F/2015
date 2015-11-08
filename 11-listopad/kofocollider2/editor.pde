@@ -66,8 +66,10 @@ Editor(String _name){
     lines = new ArrayList();
     post = new ArrayList();
 
-    //prepare arguments line
+//prepare arguments line
     String targs = "";
+    
+/*
     for(int i = 0; i < args.length;i++){
     envelopes.add(new Envelope(this,args[i],i));
       
@@ -76,6 +78,7 @@ Editor(String _name){
       else
         targs+=args[i]+",";
     }
+*/
 
     pre.add("~"+name+".ar(2);");
     pre.add("~"+name+".fadeTime="+fadetime+";");

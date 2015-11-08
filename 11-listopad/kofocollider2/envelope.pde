@@ -31,11 +31,12 @@
 
 
 
-void mouseDragged(){
+void mousePressed(){
   for(int i = 0 ; i < envelopes.size();i++){
     Envelope en  =(Envelope)envelopes.get(i);
     if(en.over){
       en.recording = true;
+      en.vals = new ArrayList();
     }
   }
 }
@@ -61,17 +62,15 @@ class Envelope{
 
   PVector dim;
 
-  boolean over();
+  boolean over;
 
   ArrayList connections;
-  
 
-
-  Envelope(){
+  Envelope(float _x,float _y){
     vals = new ArrayList();
 
-    pos = new PVector(0,height-200);
-    dim = new PVector(200,100);
+    pos = new PVector(_x,_y);
+    dim = new PVector(200,75);
 
     pointer = 0;
     println("casting envelope: "+ name);
@@ -81,17 +80,15 @@ class Envelope{
 
   void record(){
     if(recording)
-      vals.add(map(mouseY,pos.y,pos.y+dim.y,1,0));
+      vals.add(constrain(map(mouseY,pos.y,pos.y+dim.y,0,1),0.001,1));
 
   }
-
   
-  void over(){
+  boolean over(){
     if(mouseX>pos.x&&mouseX<pos.x+dim.x&&mouseY>pos.y&&mouseY<pos.y+dim.y)
     return true;
     else
     return false;
-
   }
 
 
@@ -101,27 +98,40 @@ class Envelope{
 
     record();
 
+    fill(25);
+    stroke(255);
+    rect(pos.x,pos.y,dim.x,dim.y);
+
+if(vals.size()>0){
 /*
     vals.add(noise((frameCount+(editors.indexOf(parent)*1000.0))/(100.0*(ctlId+1.0))) );
-
-    if(vals.size()>200)
-      vals.remove(0);
 */
 
+if(!recording){
+    float first = (Float)vals.get(0);
+    vals.remove(0);
+    vals.add(first);
+    }
+
+    pushMatrix();
+    translate(pos.x,pos.y);
     noFill();
     stroke(255,127);
     beginShape();
     for(int i = 0 ; i< vals.size();i++){
       Float tmp = (Float)vals.get(i);
-      vertex(i+parent.maxW+20,(tmp*12)+12*(ctlId+1)-36);
+      vertex(map(i,0,vals.size(),0,dim.x),tmp*dim.y);
     }
     endShape();
-
+    popMatrix();
+/*
     pointer++;
     pointer=pointer%vals.size();
 
     output = (Float)vals.get(pointer);
     fill(255);
     noStroke();
+    */
+    }
   }
 }
