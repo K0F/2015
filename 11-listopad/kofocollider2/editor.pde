@@ -29,6 +29,8 @@ class Editor{
   PVector pos;
   PVector dimm;
 
+  String [] args = {"x","y"};
+
   float w =0,wc =0;
   boolean execute = false;
   float fade = 0;
@@ -52,11 +54,12 @@ class Editor{
     lines.add("~"+name+".ar(2);");
     lines.add("~"+name+".fadeTime=2;");
     lines.add("~"+name+".quant=2;");
-    lines.add("~"+name+"={");
+    lines.add("~"+name+"={|"+args[0]+","+args[1]+"|");
     lines.add("var sig = LFSaw.ar(43.2);");
     lines.add("Splay.ar(sig,0.5,0.2);");
     lines.add("};");
     lines.add("~"+name+".play;");
+    lines.add("~"+name+".publish(\\"+name+");");
   }
 
   boolean over(){
@@ -66,7 +69,15 @@ class Editor{
       return false;
   }
 
+void message(Object [] data){
+  osc.send("/oo",data,sc);
+}
+
+
+    
+
   void render(){
+  message(new Object[]{name,"set",args[0],mouseX,args[1],mouseY});
 
       float maxW = 0;
       for(int i =0 ; i < lines.size();i++){
