@@ -43,9 +43,9 @@ class Editor{
   boolean over = false;
 
   float HH = 0;
-float maxW = 0;
+  float maxW = 0;
 
-Editor(String _name){
+  Editor(String _name){
     name = _name+"";
     pos = new PVector(100,100);
     generate();
@@ -66,19 +66,19 @@ Editor(String _name){
     lines = new ArrayList();
     post = new ArrayList();
 
-//prepare arguments line
+    //prepare arguments line
     String targs = "";
-    
-/*
-    for(int i = 0; i < args.length;i++){
-    envelopes.add(new Envelope(this,args[i],i));
-      
-      if(i==args.length-1)
-        targs+=args[i];
-      else
-        targs+=args[i]+",";
-    }
-*/
+
+    /*
+       for(int i = 0; i < args.length;i++){
+       envelopes.add(new Envelope(this,args[i],i));
+
+       if(i==args.length-1)
+       targs+=args[i];
+       else
+       targs+=args[i]+",";
+       }
+     */
 
     pre.add("~"+name+".ar(2);");
     pre.add("~"+name+".fadeTime="+fadetime+";");
@@ -124,13 +124,16 @@ Editor(String _name){
 
   }
 
+  int fieldOver(){
+    int answer = -1;
+    for(int i = 0; i<args.length;i++){
+      float tw = textWidth(args[i]);
+      boolean active = (mouseX>sh-3+pos.x&&mouseX<tw+4+sh-3+pos.x&&mouseY<pos.y-20&&mouseY>pos.y-20-16)?true:false;
+      if(active)
+        answer=i;
+    } 
 
-  void drawEnvelopes(){
-    for(int i = 0 ; i< envelopes.size();i++){
-      Envelope en = (Envelope)envelopes.get(i);
-        en.draw();
-        vals[i] = en.output;
-    }
+    return answer;
   }
 
   void render(){
@@ -195,6 +198,8 @@ Editor(String _name){
 
       fill(255,(sin(millis()/250.0)+1.0)/2*255);
 
+
+
       text("~"+name+" -------------------- _ O X",-17,-42);
       float sh = -17;
       for(int i = 0; i<args.length;i++){
@@ -202,19 +207,18 @@ Editor(String _name){
         stroke(#ffcc00);
 
 
-        boolean active = (mouseX>sh-3+pos.x&&mouseX<tw+4+sh-3+pos.x&&mouseY<pos.y-20&&mouseY>pos.y-20-16)?true:false;
 
         fill(active?#ff1111:0);
         rect(sh-3,-20,tw+4,-16);
-       /* 
-        if(active && mousePressed){
-          mousePressed=false;
-          active=false;
-          envelopes.add(new Envelope(this,args[i],i));
-          Envelope curr = (Envelope)envelopes.get(envelopes.size()-1);
-          curr.recording=true;
-        }
-        */
+        /* 
+           if(active && mousePressed){
+           mousePressed=false;
+           active=false;
+           envelopes.add(new Envelope(this,args[i],i));
+           Envelope curr = (Envelope)envelopes.get(envelopes.size()-1);
+           curr.recording=true;
+           }
+         */
 
         fill(255);
         text(args[i],sh,-24);

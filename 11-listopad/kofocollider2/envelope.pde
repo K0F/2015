@@ -38,6 +38,10 @@ void mousePressed(){
       en.recording = true;
       en.vals = new ArrayList();
     }
+    if(en.outOver()){
+      connections.add(new Connection(en));
+    }
+
   }
 }
 
@@ -46,6 +50,22 @@ void mouseReleased(){
     Envelope en  =(Envelope)envelopes.get(i);
     en.recording = false;
   }
+
+  try{
+    Connection c = (Connection)connections.get(connections.size()-1);
+    if(c!=null&&!c.done)
+      for(int i = 0 ; i < editors.size();i++){
+        Editor ed  =(Editor)editors.get(i);
+        if(ed.fieldOver()>-1){
+          if(c.done=false)
+            c.connectTo(ed,ed.fieldOver());
+        }
+      }
+  }catch(Exception e){
+    println("connection err");
+  };
+
+
 }
 
 class Envelope{
@@ -91,6 +111,13 @@ class Envelope{
       return false;
   }
 
+  boolean outOver(){
+    if(mouseX>pos.x&&mouseX<pos.x+10&&mouseY>pos.y+dim.x&&mouseY<pos.y+dim.y+10)
+      return true;
+    else
+      return false;
+  }
+
 
   void draw(){
 
@@ -123,8 +150,8 @@ class Envelope{
         vertex(map(i,0,vals.size(),0,dim.x),tmp*dim.y);
       }
       endShape();
-      
-      output = 1.0-(Float)vals.get(vals.size()-1)+0.001;
+
+      output = 1.0 - (Float)vals.get(vals.size()-1) + 0.001;
       fill(output*255);
       rect(0,dim.y,10,10);
       popMatrix();
