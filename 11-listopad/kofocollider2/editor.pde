@@ -20,7 +20,7 @@
 ////////////////////////////////////////////////////////////////
 
 class Editor{
-  ArrayList lines;
+  ArrayList lines,pre,post;
 
   int currln = 0;
   int carret = 0;
@@ -30,6 +30,8 @@ class Editor{
   PVector dimm;
 
   String [] args = {"x","y"};
+  float fadetime = 2;
+  boolean playing = true;
 
   float w =0,wc =0;
   boolean execute = false;
@@ -50,16 +52,21 @@ class Editor{
   }
 
   void generate(){
+    pre = new ArrayList();
     lines = new ArrayList();
-    lines.add("~"+name+".ar(2);");
-    lines.add("~"+name+".fadeTime=2;");
-    lines.add("~"+name+".quant=2;");
-    lines.add("~"+name+"={|"+args[0]+","+args[1]+"|");
+    post = new ArrayList();
+    
+    pre.add("~"+name+".ar(2);");
+    pre.add("~"+name+".fadeTime="+fadetime+";");
+    pre.add("~"+name+".quant=2;");
+    pre.add("~"+name+"={|"+args[0]+","+args[1]+"|");
+    
     lines.add("var sig = LFSaw.ar(43.2);");
     lines.add("Splay.ar(sig,0.5,0.2);");
-    lines.add("};");
-    lines.add("~"+name+".play;");
-    lines.add("~"+name+".publish(\\"+name+");");
+    
+    post.add("};");
+    post.add("~"+name+".play;");
+    post.add("~"+name+".publish(\\"+name+");");
   }
 
   boolean over(){
@@ -140,10 +147,23 @@ void message(Object [] data){
 
       if(execute){
         String tmp="";
+for(int ii = 0 ; ii < pre.size();ii++){
+          String ttmp = (String)pre.get(ii);
+          tmp+=ttmp;
+        }
+
+
         for(int ii = 0 ; ii < lines.size();ii++){
           String ttmp = (String)lines.get(ii);
           tmp+=ttmp;
         }
+
+for(int ii = 0 ; ii < post.size();ii++){
+          String ttmp = (String)post.get(ii);
+          tmp+=ttmp;
+        }
+
+
         println(tmp);
         execute(tmp);
         execute = false;
