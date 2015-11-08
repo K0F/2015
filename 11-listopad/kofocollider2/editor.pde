@@ -52,6 +52,7 @@ class Editor{
 
   void render(){
 
+try{
     //carret = constrain(carret,0,((String)lines.get(currln)).length()-1);
 
     fade += execute ? 255 : -15;
@@ -79,14 +80,17 @@ class Editor{
       fill(255);
       text(curr,0,i*rozpal);
 
-      w = textWidth(curr);
-        wc = textWidth(curr.substring(0,carret));
-
 
         fill(#ffcc00,fade);
-        rect(-5,i*rozpal+2,w+5,-rozpal);
+    rect(-20,-20,dimm.x+40,dimm.y+20);
+        //rect(-5,i*rozpal+2,w+5,-rozpal);
 
       if(i==currln){
+      w = textWidth(curr);
+      wc = textWidth(curr.substring(0,carret));
+
+
+
       
         fill(#ff0000,(sin(millis()/25.0)+1.0)/2*255);
         rect(wc-1,i*rozpal-9,2,12);
@@ -107,6 +111,7 @@ class Editor{
       execute(tmp);
       execute = false;
     }
+    }catch(Exception e){println("errr!");}
   }
 
 }
