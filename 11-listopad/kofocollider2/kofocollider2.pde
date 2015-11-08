@@ -30,11 +30,6 @@ ArrayList editors;
 Timeline timeline;
 int currEdit = 0;
 
-void mousePressed(){
-  editors.add(new Editor("syn"+editors.size(),mouseX,mouseY));
-  currEdit = editors.size()-1;
-}
-
 void setup(){
 
   size(800,800,P2D);

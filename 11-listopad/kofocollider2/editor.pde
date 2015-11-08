@@ -21,6 +21,7 @@
 
 class Editor{
   ArrayList lines,pre,post;
+  ArrayList envelopes;
 
   int currln = 0;
   int carret = 0;
@@ -56,6 +57,10 @@ class Editor{
   }
 
   void generate(){
+
+    envelopes = new ArrayList();
+
+
     pre = new ArrayList();
     lines = new ArrayList();
     post = new ArrayList();
@@ -114,6 +119,13 @@ class Editor{
   }
 
 
+  void drawEnvelopes(){
+    for(int i = 0 ; i< envelopes.size();i++){
+      Envelope e = (Envelope)envelopes.get(i);
+      t.draw();
+    }
+
+  }
 
   void render(){
 
@@ -183,14 +195,26 @@ class Editor{
       for(int i = 0; i<args.length;i++){
         float tw = textWidth(args[i]);
         stroke(#ffcc00);
-        fill(0);
+
+
+        boolean active = (mouseX>sh-3+pos.x&&mouseX<tw+4+sh-3+pos.x&&mouseY<pos.y-20&&mouseY>pos.y-20-16)?true:false;
+
+        fill(active?#ff1111:0);
         rect(sh-3,-20,tw+4,-16);
+
+        if(active&&mousePressed){
+          mousePressed=false;
+          envelopes.add(new Envelope(this,args[i],i));
+        }
+
         fill(255);
         text(args[i],sh,-24);
         sh += tw+6;
       }
 
       popMatrix();
+
+      drawEnvelopes();
 
       if(execute){
         String tmp="";
