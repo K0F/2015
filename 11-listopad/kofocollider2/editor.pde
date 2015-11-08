@@ -41,6 +41,8 @@ class Editor{
   String name;
   boolean over = false;
 
+  float HH = 0;
+
   Editor(String _name){
     name = _name+"";
     pos = new PVector(100,100);
@@ -81,7 +83,7 @@ class Editor{
   }
 
   boolean over(){
-    if(mouseX>pos.x-20&&mouseY>pos.y-20&&mouseX<pos.x+dimm.x+40&&mouseY<pos.y+dimm.y+20)
+    if(mouseX>pos.x-20&&mouseY>pos.y-20-HH&&mouseX<pos.x+dimm.x+40&&mouseY<pos.y+dimm.y+20)
       return true;
     else
       return false;
@@ -148,7 +150,7 @@ class Editor{
 
       }
       fill(255,15);
-      rect(-20,-20,dimm.x+40,dimm.y+20);
+      rect(-20,-20-HH,dimm.x+40,dimm.y+20);
 
       noStroke();
       for(int i =0 ; i < lines.size();i++){
@@ -158,7 +160,7 @@ class Editor{
 
 
         fill(#ffcc00,fade);
-        rect(-20,-20,dimm.x+40,dimm.y+20);
+        rect(-20,-20-HH,dimm.x+40,dimm.y+20);
         //rect(-5,i*rozpal+2,w+5,-rozpal);
 
         if(i==currln && currEdit==editors.indexOf(this)){
@@ -174,11 +176,18 @@ class Editor{
         }
       }
 
-      fill(255);
-      float sh = 0;
+      fill(255,(sin(millis()/250.0)+1.0)/2*255);
+
+      text("~"+name+" -------------------- _ O X",-17,-42);
+      float sh = -17;
       for(int i = 0; i<args.length;i++){
+        float tw = textWidth(args[i]);
+        stroke(#ffcc00);
+        fill(0);
+        rect(sh-3,-20,tw+4,-16);
+        fill(255);
         text(args[i],sh,-24);
-        sh += textWidth(args[i])+6;
+        sh += tw+6;
       }
 
       popMatrix();
