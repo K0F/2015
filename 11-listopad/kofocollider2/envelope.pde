@@ -1,72 +1,23 @@
-
-
 /*
-   void mousePressed(){
-   editors.add(new Editor("syn"+editors.size(),mouseX,mouseY));
-   currEdit = editors.size()-1;
-   }
 
-   void mouseDragged(){
-   println("starting recording of envelope");
-   Editor tmp = (Editor)editors.get(currEdit);
-   Envelope tenv = (Envelope)tmp.envelopes.get(tmp.envelopes.size()-1);
-   tenv.recording = true;
-   }
+Kofocollider interface to SuperCollider written in processing and using OpenObject
+Copyright (C) 2015 Krystof Pesek
 
-   void mouseReleased(){
-   Editor tmp = (Editor)editors.get(currEdit);
-   Envelope tenv = (Envelope)tmp.envelopes.get(tmp.envelopes.size()-1);
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-   try{
-   tenv.recording = false;
-   tenv.recorded = true;
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-   }catch(Exception e){
-   println("envelope creation err");
-   }
-   }
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 
- */
-
-
-
-void mousePressed(){
-  for(int i = 0 ; i < envelopes.size();i++){
-    Envelope en  =(Envelope)envelopes.get(i);
-    if(en.over){
-      en.recording = true;
-      en.vals = new ArrayList();
-    }
-    if(en.outOver()){
-      connections.add(new Connection(en));
-    }
-
-  }
-}
-
-void mouseReleased(){
-  for(int i = 0 ; i < envelopes.size();i++){
-    Envelope en  =(Envelope)envelopes.get(i);
-    en.recording = false;
-  }
-
-  try{
-    Connection c = (Connection)connections.get(connections.size()-1);
-    if(c!=null&&!c.done)
-      for(int i = 0 ; i < editors.size();i++){
-        Editor ed  =(Editor)editors.get(i);
-        if(ed.fieldOver()>-1){
-          if(c.done=false)
-            c.connectTo(ed,ed.fieldOver());
-        }
-      }
-  }catch(Exception e){
-    println("connection err");
-  };
-
-
-}
 
 class Envelope{
 
@@ -112,7 +63,7 @@ class Envelope{
   }
 
   boolean outOver(){
-    if(mouseX>pos.x&&mouseX<pos.x+10&&mouseY>pos.y+dim.x&&mouseY<pos.y+dim.y+10)
+    if(mouseX>pos.x&&mouseX<pos.x+10&&mouseY>pos.y+dim.y&&mouseY<pos.y+dim.y+10)
       return true;
     else
       return false;

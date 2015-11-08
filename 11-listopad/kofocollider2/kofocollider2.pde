@@ -29,6 +29,7 @@ NetAddress sc;
 ArrayList editors;
 Timeline timeline;
 ArrayList envelopes;
+ArrayList connections;
 
 int currEdit = 0;
 
@@ -52,9 +53,11 @@ void setup(){
   for(int i = 100;i<width;i+=250)
   envelopes.add(new Envelope(i,50));
 
+  connections = new ArrayList();
+
   editors = new ArrayList();
 
-  editors.add(new Editor("syn"+editors.size(),100,200));
+  editors.add(new Editor("syn"+editors.size(),150,300));
   currEdit=0;
 
   timeline = new Timeline(8);
@@ -78,10 +81,16 @@ void draw(){
     tmp.render();
   }
 
-for(Object o : envelopes){
+  for(Object o : envelopes){
     Envelope tmp = (Envelope)o;
     tmp.draw();
   }
+
+  for(Object o : connections){
+    Connection tmp = (Connection)o;
+    tmp.draw();
+  }
+
 
 
   timeline.render();
@@ -104,62 +113,62 @@ void stop(){
 }
 
 /*
-class Boid{
-  PVector pos,acc,vel;
-  String ctl;
-  ArrayList history;
-  int rew =0;
-  float speed = 10.0;
+   class Boid{
+   PVector pos,acc,vel;
+   String ctl;
+   ArrayList history;
+   int rew =0;
+   float speed = 10.0;
 
-  Boid(String _ctl){
-    ctl = _ctl;
-    pos = new PVector(width/2,height/2);
-    acc  =new PVector(0,0);
-    vel = new PVector(0,0);
-    history=new ArrayList();
-  }
+   Boid(String _ctl){
+   ctl = _ctl;
+   pos = new PVector(width/2,height/2);
+   acc  =new PVector(0,0);
+   vel = new PVector(0,0);
+   history=new ArrayList();
+   }
 
-  void draw(){
-    move(); 
-    fill(0);
-    noStroke();
-    rect(pos.x,pos.y,5,5);
+   void draw(){
+   move(); 
+   fill(0);
+   noStroke();
+   rect(pos.x,pos.y,5,5);
 
-    rew+=speed;
-    rew=rew%history.size();
-    PVector tmp = (PVector)history.get(rew);
-    rect(tmp.x,tmp.y,3,3);
+   rew+=speed;
+   rew=rew%history.size();
+   PVector tmp = (PVector)history.get(rew);
+   rect(tmp.x,tmp.y,3,3);
 
-    msg(ctl,"phase",map(tmp.x,0,width,-PI,PI));
-    msg(ctl,"amp",map(tmp.y,0,height,1,0.01));
+   msg(ctl,"phase",map(tmp.x,0,width,-PI,PI));
+   msg(ctl,"amp",map(tmp.y,0,height,1,0.01));
 
-    beginShape();
-    stroke(0);
-    noFill();
-    for(int i = 0;i<history.size();i++){
-      PVector curr = (PVector)history.get(i);
-      vertex(curr.x,curr.y);
-    }
-    endShape();
+   beginShape();
+   stroke(0);
+   noFill();
+   for(int i = 0;i<history.size();i++){
+   PVector curr = (PVector)history.get(i);
+   vertex(curr.x,curr.y);
+   }
+   endShape();
 
-  }
+   }
 
-  void move(){
-    acc.mult(0.9);
-    vel.mult(0.9);
-    pos.add(vel);
-    vel.add(acc);
-    acc.add(new PVector(random(-0.1,0.1),random(-0.1,0.1)));
-    pos.x=constrain(pos.x,1,width);
-    pos.y=constrain(pos.y,1,height);
+   void move(){
+   acc.mult(0.9);
+   vel.mult(0.9);
+   pos.add(vel);
+   vel.add(acc);
+   acc.add(new PVector(random(-0.1,0.1),random(-0.1,0.1)));
+   pos.x=constrain(pos.x,1,width);
+   pos.y=constrain(pos.y,1,height);
 
-    history.add(new PVector(pos.x,pos.y));
-    if(history.size()>1000)
-      history.remove(0);
-  }
+   history.add(new PVector(pos.x,pos.y));
+   if(history.size()>1000)
+   history.remove(0);
+   }
 
-}
-*/
+   }
+ */
 
 void execute(String _in){
   osc.send("/oo_i",new Object[]{_in},sc);

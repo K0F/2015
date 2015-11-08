@@ -126,11 +126,13 @@ class Editor{
 
   int fieldOver(){
     int answer = -1;
+    float sh = -17;
     for(int i = 0; i<args.length;i++){
       float tw = textWidth(args[i]);
       boolean active = (mouseX>sh-3+pos.x&&mouseX<tw+4+sh-3+pos.x&&mouseY<pos.y-20&&mouseY>pos.y-20-16)?true:false;
       if(active)
         answer=i;
+        sh += tw+6;
     } 
 
     return answer;
@@ -206,7 +208,9 @@ class Editor{
         float tw = textWidth(args[i]);
         stroke(#ffcc00);
 
-
+        tw = textWidth(args[i]);
+        boolean active = (mouseX>sh-3+pos.x&&mouseX<tw+4+sh-3+pos.x&&mouseY<pos.y-20&&mouseY>pos.y-20-16)?true:false;
+  
 
         fill(active?#ff1111:0);
         rect(sh-3,-20,tw+4,-16);
@@ -224,7 +228,6 @@ class Editor{
         text(args[i],sh,-24);
         sh += tw+6;
       }
-      drawEnvelopes();
 
       popMatrix();
 
