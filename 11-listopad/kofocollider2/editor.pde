@@ -95,7 +95,7 @@ class Editor{
 
   void sendVals(){
     ArrayList arrr = new ArrayList();
-    arrr.add((Object)"name");
+    arrr.add((Object)name+"");
     arrr.add((Object)"set");
 
 
