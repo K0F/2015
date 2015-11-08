@@ -29,7 +29,9 @@ class Editor{
   PVector pos;
   PVector dimm;
 
-  String [] args = {"x","y"};
+  String [] args = {"freq","amp","dur","mod","x","y","z"};
+  float [] vals = new float[args.length];
+
   float fadetime = 2;
   boolean playing = true;
 
@@ -55,48 +57,77 @@ class Editor{
     pre = new ArrayList();
     lines = new ArrayList();
     post = new ArrayList();
-    
+
+    //prepare arguments line
+    String targs = "";
+    for(int i = 0; i < args.length;i++){
+      if(i==args.length-1)
+        targs+=args[i];
+      else
+        targs+=args[i]+",";
+    }
+
     pre.add("~"+name+".ar(2);");
     pre.add("~"+name+".fadeTime="+fadetime+";");
     pre.add("~"+name+".quant=2;");
-    pre.add("~"+name+"={|"+args[0]+","+args[1]+"|");
-    
+    pre.add("~"+name+"={|"+targs+"|");
+
     lines.add("var sig = LFSaw.ar(43.2);");
     lines.add("Splay.ar(sig,0.5,0.2);");
-    
+
     post.add("};");
     post.add("~"+name+".play;");
     post.add("~"+name+".publish(\\"+name+");");
   }
 
   boolean over(){
-      if(mouseX>pos.x-20&&mouseY>pos.y-20&&mouseX<pos.x+dimm.x+40&&mouseY<pos.y+dimm.y+20)
+    if(mouseX>pos.x-20&&mouseY>pos.y-20&&mouseX<pos.x+dimm.x+40&&mouseY<pos.y+dimm.y+20)
       return true;
-      else
+    else
       return false;
   }
 
-void message(Object [] data){
-  osc.send("/oo",data,sc);
-}
+  void message(Object [] data){
+    osc.send("/oo",data,sc);
+  }
+
+  void sendVals(){
+    ArrayList arrr = new ArrayList();
+    arrr.add((Object)"name");
+    arrr.add((Object)"set");
 
 
-    
+    for(int i = 0; i < args.length;i++){
+      arrr.add((Object)args[i]);
+      arrr.add((Object)vals[i]);
+    }
+
+    Object complete[] = new Object[arrr.size()];
+    for(int i = 0; i < arrr.size();i++){
+      complete[i] = (Object)arrr.get(i);
+    }
+
+    message(complete);
+
+  }
+
+
 
   void render(){
-  message(new Object[]{name,"set",args[0],mouseX,args[1],mouseY});
 
-      float maxW = 0;
-      for(int i =0 ; i < lines.size();i++){
-        String curr = (String)lines.get(i);
-        maxW = max(maxW,textWidth(curr));
-      }
+    sendVals();
 
-      dimm = new PVector(maxW,lines.size()*rozpal);
+    float maxW = 0;
+    for(int i =0 ; i < lines.size();i++){
+      String curr = (String)lines.get(i);
+      maxW = max(maxW,textWidth(curr));
+    }
+
+    dimm = new PVector(maxW,lines.size()*rozpal);
 
 
     over = over();
-    
+
     //if(over)
     //currEdit = editors.indexOf(this);
 
@@ -109,11 +140,11 @@ void message(Object [] data){
       pushMatrix();
       translate(pos.x,pos.y);
       rectMode(CORNER);
-      
+
       if(currEdit==editors.indexOf(this)){
-      stroke(#ffcc00);
+        stroke(#ffcc00);
       }else{
-      stroke(255,127);
+        stroke(255,127);
 
       }
       fill(255,15);
@@ -143,11 +174,18 @@ void message(Object [] data){
         }
       }
 
+      fill(255);
+      float sh = 0;
+      for(int i = 0; i<args.length;i++){
+        text(args[i],sh,-24);
+        sh += textWidth(args[i])+6;
+      }
+
       popMatrix();
 
       if(execute){
         String tmp="";
-for(int ii = 0 ; ii < pre.size();ii++){
+        for(int ii = 0 ; ii < pre.size();ii++){
           String ttmp = (String)pre.get(ii);
           tmp+=ttmp;
         }
@@ -158,7 +196,7 @@ for(int ii = 0 ; ii < pre.size();ii++){
           tmp+=ttmp;
         }
 
-for(int ii = 0 ; ii < post.size();ii++){
+        for(int ii = 0 ; ii < post.size();ii++){
           String ttmp = (String)post.get(ii);
           tmp+=ttmp;
         }
