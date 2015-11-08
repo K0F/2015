@@ -202,8 +202,14 @@ class Editor{
       fill(255,(sin(millis()/250.0)+1.0)/2*255);
 
 
+      String nn = "~"+name+" ";
+      while(textWidth(nn)<maxW)
+      nn+="-";
 
-      text("~"+name+" -------------------- _ O X",-17,-42);
+      nn+="   V";
+
+      text(nn,-17,-42);
+
       float sh = -17;
       for(int i = 0; i<args.length;i++){
         float tw = textWidth(args[i]);
