@@ -20,69 +20,120 @@ void draw(){
 //////////////////////////////////
 
 class Network{
-  ArrayList words,nodes;
+  ArrayList words,nodes,connections;
   String filename;
 
   Network(String _filename){
     filename = _filename;
     words = new ArrayList();
     nodes = new ArrayList();
+    connections = new ArrayList();
     String tmp[] = loadStrings(filename);
 
     analyze(tmp);
+    castNodes();
+    makeConnections();
   }
 
   void analyze(String [] _tmp){
     for(int i = 0 ; i < _tmp.length;i++){
       words.add(new Word(_tmp[i]));
+    }
 
-      for(int ii = 0 ; ii < _tmp[i].length();ii++){
-        
-       boolean has = false;
-          String cc = "";
-       check:
-        for(int iii=0;iii<nodes.size();iii++){
-          Node ctmp = (Node)nodes.get(iii);
-          cc = ctmp.name;
 
-          if(!(_tmp[i].charAt(ii)+"").equals(cc)){
-          has = true;
-          break check;
+  }
+
+  void castNodes(){
+
+    for(int i = 0 ; i < words.size();i++){
+      Word w = (Word)words.get(i);
+
+      boolean has = false;
+      String cc = "";
+      int last = 0;
+
+check:
+      for(int ii=0;ii<w.word.length();ii++){
+
+        cc = w.word.charAt(ii)+"";        
+
+        for(int iii = 0 ; iii < nodes.size();iii++){
+          Node n = (Node)nodes.get(iii);
+
+          if((cc).equals(n.name)){
+            has = true;
+            break check;
           }
         }
-        if(!has)
-            nodes.add(new Node(cc));
       }
+
+      if(!has)
+        nodes.add(new Node(cc));
     }
   }
+
+  void makeConnections(){
+    for(int i = 0 ; i < words.size();i++){
+      Word w = (Word)words.get(i);
+      for(int ii = 1 ; ii < w.word.length();ii++){
+        Node a = getNodeByName(w.word.charAt(ii-1)+"");
+        Node b = getNodeByName(w.word.charAt(ii)+"");
+        connections.add(new Connection(a,b));
+      }
+    } 
+  }
+
+  Node getNodeByName(String _input){
+
+    Node result = null;
+
+search:
+    for(int i = 0 ; i < nodes.size();i++){
+      Node n = (Node)nodes.get(i);
+      if(n.name.equals(_input)){
+        result = n;
+        break search;
+
+      }
+
+    }
+    return result;
+
+  }
+
+
 
   void draw(){
     float x,y;
     x=y=0;
-/*
-    for(int i = 0 ; i < words.size();i++){
-      Word w = (Word)words.get(i);
-      pushMatrix();
+    /*
+       for(int i = 0 ; i < words.size();i++){
+       Word w = (Word)words.get(i);
+       pushMatrix();
 
-      translate(x,y);
-      w.draw();
-      popMatrix();
-
-
-      x = w.binary.length()+5;
+       translate(x,y);
+       w.draw();
+       popMatrix();
 
 
-      if(x>=width){
-        x=0;
-        y+=5;
-      }
+       x = w.binary.length()+5;
+
+
+       if(x>=width){
+       x=0;
+       y+=5;
+       }
+       }
+     */
+    for(int i = 0 ; i < nodes.size();i++){
+      Node n = (Node)nodes.get(i);
+      n.draw();
     }
-  */
-  fill(255);
-  for(int i = 0 ; i < nodes.size();i++){
-    Node n = (Node)nodes.get(i);
-    text(n.name,10,i*10);
-  }
+
+    for(int i = 0 ; i < connections.size();i++){
+      Connection c = (Connection)connections.get(i);
+      c.draw();
+    }
   }
 }
 
@@ -92,9 +143,20 @@ class Node{
   String name;
   float val;
   ArrayList conn;
+  PVector pos;
 
   Node(String _c){
     name = _c;
+    pos = new PVector(random(-100,100),random(-100,100));
+  }
+
+  void draw(){
+    fill(255);
+    pushMatrix();
+    translate(width/2,height/2);
+    text(name,pos.x,pos.y);
+    popMatrix();
+
   }
 
 }
@@ -105,6 +167,16 @@ class Connection{
   Connection(Node _a,Node _b){
     a=_a;
     b=_b;
+  }
+
+  void draw(){
+    pushMatrix();
+    translate(width/2,height/2);
+    stroke(255,5);
+    if(a!=null&&b!=null)
+      line(a.pos.x,a.pos.y,b.pos.x,b.pos.y);
+
+    popMatrix();
   }
 }
 
