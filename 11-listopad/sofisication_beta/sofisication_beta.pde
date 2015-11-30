@@ -37,12 +37,21 @@ class Network{
       words.add(new Word(_tmp[i]));
 
       for(int ii = 0 ; ii < _tmp[i].length();ii++){
+        
+       boolean has = false;
+          String cc = "";
+       check:
         for(int iii=0;iii<nodes.size();iii++){
-          String cc = (String)nodes.get(iii);
-          if((_tmp[i].charAt(ii)+"").equals(cc)){
-            nodes.add(new Node(cc));
+          Node ctmp = (Node)nodes.get(iii);
+          cc = ctmp.name;
+
+          if(!(_tmp[i].charAt(ii)+"").equals(cc)){
+          has = true;
+          break check;
           }
         }
+        if(!has)
+            nodes.add(new Node(cc));
       }
     }
   }
@@ -50,7 +59,7 @@ class Network{
   void draw(){
     float x,y;
     x=y=0;
-
+/*
     for(int i = 0 ; i < words.size();i++){
       Word w = (Word)words.get(i);
       pushMatrix();
@@ -68,6 +77,12 @@ class Network{
         y+=5;
       }
     }
+  */
+  fill(255);
+  for(int i = 0 ; i < nodes.size();i++){
+    Node n = (Node)nodes.get(i);
+    text(n.name,10,i*10);
+  }
   }
 }
 
