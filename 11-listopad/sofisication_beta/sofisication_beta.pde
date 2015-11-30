@@ -22,7 +22,7 @@ class Reader{
   Node target;
   String history;
   ArrayList memory;
-  float speed = 3.3;
+  float speed = 2.0;
   PVector pos;
 
   Reader(Network _parent){
@@ -69,7 +69,10 @@ class Reader{
     }
 
     rectMode(CENTER);
-    rect(pos.x,pos.y,3,3);
+
+    fill(255,90);
+    stroke(0);
+    ellipse(pos.x,pos.y,5,5);
 
     popMatrix();
   }
