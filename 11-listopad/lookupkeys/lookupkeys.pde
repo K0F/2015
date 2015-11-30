@@ -12,14 +12,10 @@ void zadani(){
   for(int i = 1 ; i < source.length;i++){
     source[i] = (sin(i/10.0)+1.0)*25;
   }
-
-
-
 }
 
 void setup(){
   size(320,240);
-
 
   textFont(createFont("Semplice Regular",8,false));
 
@@ -31,8 +27,6 @@ void setup(){
 
   zadani();
   err = err(1,1);
-
-
 }
 
 
@@ -60,7 +54,6 @@ iterate:
   text("err: "+err,10,20);
   text("seed: "+best[0],10,30);
   text("res: "+best[1],10,40);
-
 }
 
 void plot(){
@@ -76,8 +69,7 @@ void plot(){
 }
 
 float err(int seed,float res){
-
-  float err =0;
+  float err = 0;
 
   for(int i = 0;i<source.length;i++){
     guess[i] = sin(i+(seed)/res)+1.0*25;
@@ -88,5 +80,4 @@ float err(int seed,float res){
   }
 
   return err;
-
 }
