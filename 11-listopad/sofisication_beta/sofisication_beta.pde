@@ -68,7 +68,7 @@ check:
       }
 
       if(!has)
-        nodes.add(new Node(cc));
+        nodes.add(new Node(cc,this));
     }
   }
 
@@ -78,7 +78,9 @@ check:
       for(int ii = 1 ; ii < w.word.length();ii++){
         Node a = getNodeByName(w.word.charAt(ii-1)+"");
         Node b = getNodeByName(w.word.charAt(ii)+"");
-        connections.add(new Connection(a,b));
+        connections.add(new Connection(a,b,this));
+        if(a!=null&&b!=null)
+        a.addConnection(b);
       }
     } 
   }
@@ -142,12 +144,22 @@ search:
 class Node{
   String name;
   float val;
-  ArrayList conn;
+  ArrayList connections;
   PVector pos;
+  Network parent;
 
-  Node(String _c){
+  Node(String _c,Network _parent){
     name = _c;
+    parent = _parent;
+
+    connections = new ArrayList();
+
     pos = new PVector(random(-100,100),random(-100,100));
+  }
+
+  void addConnection(Node b){
+    if(b!=null)
+    connections.add(new Connection(this,b,parent));
   }
 
   void draw(){
@@ -163,16 +175,29 @@ class Node{
 
 class Connection{
   Node a,b;
+  Network parent;
+  int num = 1;
 
-  Connection(Node _a,Node _b){
+  Connection(Node _a,Node _b,Network _parent){
+
+    parent = _parent;
     a=_a;
     b=_b;
+
+    for(int i = 0 ; i < parent.connections.size();i++){
+      Connection cc = (Connection)parent.connections.get(i);
+      if(cc.a==a&&cc.b==b){
+      cc.num++;
+      parent.connections.remove(this);
+      }
+    }
+
   }
 
   void draw(){
     pushMatrix();
     translate(width/2,height/2);
-    stroke(255,5);
+    stroke(255,num);
     if(a!=null&&b!=null)
       line(a.pos.x,a.pos.y,b.pos.x,b.pos.y);
 
