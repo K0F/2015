@@ -21,29 +21,54 @@ class Reader{
   Network parent;
   Node target;
   String history;
-  float speed = 10.0;
+  ArrayList memory;
+  float speed = 3.3;
   PVector pos;
 
   Reader(Network _parent){
     parent = _parent;
+    history="";
+    memory = new ArrayList();
     target=(Node)parent.nodes.get((int)random(parent.nodes.size()));
     pos = new PVector(0,0);
   }
 
   void getNext(){
+    history+=""+target.name;
+    memory.add(target);
+    try{
     target=target.getNext();
+    }catch(Exception e){;}
   }
 
   void draw(){
     
-    pos.add(new PVector((target.pos.x-pos.x)/speed,(target.pos.y-pos.y)/speed));
+    pushMatrix();
+        pos.add(new PVector((target.pos.x-pos.x)/speed,(target.pos.y-pos.y)/speed));
     if(dist(target.pos.x,target.pos.y,pos.x,pos.y)<2){
       getNext();
     }
 
-    pushMatrix();
     translate(width/2,height/2);
-    rectMode(CENTER);
+    fill(255);
+    text(history,20,20,width-60,height-60);
+
+beginShape();
+    stroke(255,25);
+    noFill();
+    for(int i = 0 ; i<memory.size();i++){
+      Node m = (Node)memory.get(i);
+      vertex(m.pos.x,m.pos.y);
+    }
+    endShape();
+
+
+    if(history.length()>100){
+    history = history.substring(1,history.length());
+    memory.remove(0);
+    }
+    
+rectMode(CENTER);
     rect(pos.x,pos.y,3,3);
 
   popMatrix();
@@ -168,12 +193,12 @@ search:
       Node n = (Node)nodes.get(i);
       n.draw();
     }
-
+/*
     for(int i = 0 ; i < connections.size();i++){
       Connection c = (Connection)connections.get(i);
       c.draw();
     }
-
+*/
     reader.draw();
   }
 }
@@ -188,7 +213,7 @@ class Node{
   Network parent;
 
   Node(String _c,Network _parent){
-    name = _c;
+    name = _c+"";
     parent = _parent;
 
     connections = new ArrayList();
@@ -205,14 +230,16 @@ class Node{
       sum+=c.num;
     }
     for(int i = 0 ; i<ratios.length;i++){
-      if(random(ratios[i])>random(sum)){
+      if(ratios[i]>random(sum)){
         Connection _b = (Connection)connections.get(i);
         return _b.b;
 
         }
     }
+    
 
-    return null;
+    Connection _b = (Connection)connections.get((int)random(connections.size()));
+    return _b.b;
   }
 
   void addConnection(Node b){
