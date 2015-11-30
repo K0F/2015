@@ -17,11 +17,43 @@ void draw(){
 }
 
 
+class Reader{
+  Network parent;
+  Node target;
+  String history;
+
+  PVector pos;
+
+  Reader(Network _parent){
+    parent = _parent;
+    target=(Node)parent.nodes.get((int)random(parent.nodes.size()));
+    pos = new PVector(0,0);
+  }
+
+  void getNext(){
+    target=target.getNext();
+  }
+
+  void draw(){
+    
+    pos.add((target.x-pos.x)/speed,(target.y-pos.y)/speed);
+    if(dist(target.x,target.y,pos.x,pos.y)<2){
+      getNext();
+    }
+
+    rectMode(CENTER);
+    rect(pos.x,pos.y,3,3);
+
+  }
+
+}
+
 //////////////////////////////////
 
 class Network{
   ArrayList words,nodes,connections;
   String filename;
+  Reader reader;
 
   Network(String _filename){
     filename = _filename;
@@ -33,6 +65,8 @@ class Network{
     analyze(tmp);
     castNodes();
     makeConnections();
+
+    reader = new Reader(this);
   }
 
   void analyze(String [] _tmp){
@@ -136,6 +170,8 @@ search:
       Connection c = (Connection)connections.get(i);
       c.draw();
     }
+
+    reader.draw();
   }
 }
 
@@ -154,7 +190,23 @@ class Node{
 
     connections = new ArrayList();
 
-    pos = new PVector(random(-100,100),random(-100,100));
+    pos = new PVector(random(-200,200),random(-200,200));
+  }
+
+  Node getNext(){
+    float [] ratios = new float[connections.size()];
+    float sum =0;
+    for(int i = 0 ; i< connections.size();i++){
+      Connection c = (Connection)connections.get(i);
+      ratios[i] = c.num;
+      sum+=c.num;
+    }
+    for(int i = 0 ; i<ratios.length;i++){
+      if(random(ratios[i])>random(sum))
+        return (Connection)connections.get(i);
+    }
+
+    return null;
   }
 
   void addConnection(Node b){
@@ -197,7 +249,7 @@ class Connection{
   void draw(){
     pushMatrix();
     translate(width/2,height/2);
-    stroke(255,num);
+    stroke(255,num/255.0);
     if(a!=null&&b!=null)
       line(a.pos.x,a.pos.y,b.pos.x,b.pos.y);
 
