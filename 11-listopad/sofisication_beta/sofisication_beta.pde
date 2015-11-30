@@ -37,14 +37,14 @@ class Reader{
     history+=""+target.name;
     memory.add(target);
     try{
-    target=target.getNext();
+      target=target.getNext();
     }catch(Exception e){;}
   }
 
   void draw(){
-    
+
     pushMatrix();
-        pos.add(new PVector((target.pos.x-pos.x)/speed,(target.pos.y-pos.y)/speed));
+    pos.add(new PVector((target.pos.x-pos.x)/speed,(target.pos.y-pos.y)/speed));
     if(dist(target.pos.x,target.pos.y,pos.x,pos.y)<2){
       getNext();
     }
@@ -53,7 +53,7 @@ class Reader{
     fill(255);
     text(history,20,20,width-60,height-60);
 
-beginShape();
+    beginShape();
     stroke(255,25);
     noFill();
     for(int i = 0 ; i<memory.size();i++){
@@ -64,14 +64,14 @@ beginShape();
 
 
     if(history.length()>100){
-    history = history.substring(1,history.length());
-    memory.remove(0);
+      history = history.substring(1,history.length());
+      memory.remove(0);
     }
-    
-rectMode(CENTER);
+
+    rectMode(CENTER);
     rect(pos.x,pos.y,3,3);
 
-  popMatrix();
+    popMatrix();
   }
 
 }
@@ -142,7 +142,7 @@ check:
         Node b = getNodeByName(w.word.charAt(ii)+"");
         connections.add(new Connection(a,b,this));
         if(a!=null&&b!=null)
-        a.addConnection(b);
+          a.addConnection(b);
       }
     } 
   }
@@ -193,12 +193,12 @@ search:
       Node n = (Node)nodes.get(i);
       n.draw();
     }
-/*
-    for(int i = 0 ; i < connections.size();i++){
-      Connection c = (Connection)connections.get(i);
-      c.draw();
-    }
-*/
+    /*
+       for(int i = 0 ; i < connections.size();i++){
+       Connection c = (Connection)connections.get(i);
+       c.draw();
+       }
+     */
     reader.draw();
   }
 }
@@ -234,9 +234,9 @@ class Node{
         Connection _b = (Connection)connections.get(i);
         return _b.b;
 
-        }
+      }
     }
-    
+
 
     Connection _b = (Connection)connections.get((int)random(connections.size()));
     return _b.b;
@@ -244,7 +244,7 @@ class Node{
 
   void addConnection(Node b){
     if(b!=null)
-    connections.add(new Connection(this,b,parent));
+      connections.add(new Connection(this,b,parent));
   }
 
   void draw(){
@@ -272,8 +272,8 @@ class Connection{
     for(int i = 0 ; i < parent.connections.size();i++){
       Connection cc = (Connection)parent.connections.get(i);
       if(cc.a==a&&cc.b==b){
-      cc.num++;
-      parent.connections.remove(this);
+        cc.num++;
+        parent.connections.remove(this);
       }
     }
 
