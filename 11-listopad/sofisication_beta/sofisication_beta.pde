@@ -21,7 +21,7 @@ class Reader{
   Network parent;
   Node target;
   String history;
-
+  float speed = 10.0;
   PVector pos;
 
   Reader(Network _parent){
@@ -36,14 +36,17 @@ class Reader{
 
   void draw(){
     
-    pos.add((target.x-pos.x)/speed,(target.y-pos.y)/speed);
-    if(dist(target.x,target.y,pos.x,pos.y)<2){
+    pos.add(new PVector((target.pos.x-pos.x)/speed,(target.pos.y-pos.y)/speed));
+    if(dist(target.pos.x,target.pos.y,pos.x,pos.y)<2){
       getNext();
     }
 
+    pushMatrix();
+    translate(width/2,height/2);
     rectMode(CENTER);
     rect(pos.x,pos.y,3,3);
 
+  popMatrix();
   }
 
 }
@@ -202,8 +205,11 @@ class Node{
       sum+=c.num;
     }
     for(int i = 0 ; i<ratios.length;i++){
-      if(random(ratios[i])>random(sum))
-        return (Connection)connections.get(i);
+      if(random(ratios[i])>random(sum)){
+        Connection _b = (Connection)connections.get(i);
+        return _b.b;
+
+        }
     }
 
     return null;
