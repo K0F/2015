@@ -10,12 +10,13 @@ MultiChannelBuffer buf;
 AudioOutput output;
 Sampler sampler;
 
+ArrayList samples;
 
 float lpf[];
 boolean buffer[][];
 
 int BIT_DEPTH = 16;
-int BUFFER_SIZE = 512;
+int BUFFER_SIZE = 720;
 int SPREAD = 4;
 
 void setup(){
@@ -24,7 +25,9 @@ void setup(){
   minim = new Minim(this);
   output = minim.getLineOut();
 
-  movie = new Movie(this,"mov.mpeg");
+  samples = new ArrayList();
+
+  movie = new Movie(this,"video.mpeg");
   movie.play();
 
   buf = new MultiChannelBuffer(1,BUFFER_SIZE);
@@ -61,9 +64,16 @@ void evolve(){
     //lpf[x] += (smpl-lpf[x])/200.0;
     //if(random(255)<(sin(frameCount/100.0)+1.0)*127 )
     //  buffer[x][y] = buffer[(x+(int)random(-SPREAD,SPREAD)+width)%(buffer.length)][(y+(int)random(-SPREAD,SPREAD)+16)%16];
-    float s = brightness(pixels[(height/2)*width+(x%(buffer.length))]);
-    buf.setSample(0,x,map(s,0,255,-1,1));
+    float s = hue(pixels[(height/2)*width+(x%(buffer.length))]);
+    samples.add(s);
+    if(samples.size()>BUFFER_SIZE)
+    samples.remove(0);
   }
+
+for(int i = 0 ; i < samples.size();i++){
+    float f = (Float)samples.get(i);
+    buf.setSample(0,i,map(f,0,255,-1,1));
+    }
 }
 
 void draw(){

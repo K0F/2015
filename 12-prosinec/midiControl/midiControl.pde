@@ -1,19 +1,20 @@
 import processing.serial.*;
-import cc.arduino.*;
+//import arduino.*;
 
 
 import promidi.*;
 
 MidiIO midiIO;
-Arduino arduino;
+//Arduino arduino;
 
 ArrayList buttons;
 
 
 void setup(){
 
+  size(320,240);
 
-
+/*
   Arduino arduino;
   for(int i = 0; i < sw.length; i++) {
     arduino.pinMode(sw[i], Arduino.INPUT);
@@ -23,7 +24,7 @@ void setup(){
   for(int i = 0; i < led.length; i++) {
     arduino.pinMode(led[i], Arduino.OUTPUT);
   }
-
+*/
   midiIO = MidiIO.getInstance(this);
   println("printPorts of midiIO");
   midiIO.printDevices();
