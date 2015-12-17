@@ -183,6 +183,8 @@ class Button{
     rect(0,0,w,w);
     popMatrix();
     send();
+
+    on = (noise((frameCount+(num*2.0))/3.0)>0.5)?true:false;
   }
 
 }
