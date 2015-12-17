@@ -15,10 +15,10 @@ int w = 20;
 
 ArrayList buttons;
 int notes[] = {
-48,49,50,51,
-44,45,46,47,
-40,41,42,43,
-36,37,38,39
+  48,49,50,51,
+  44,45,46,47,
+  40,41,42,43,
+  36,37,38,39
 };
 //int notes[] = {36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51};
 int channel = 9;
@@ -103,12 +103,12 @@ void noteOff(int channel, int pitch, int velocity, long timestamp, String bus_na
     println("Timestamp:"+timestamp);
     println("Recieved on Bus:"+bus_name);
   }
-/*
-  Button tmp = getByNum(pitch);
-  tmp.on=false;
-  tmp.send();
-  */
-  }
+  /*
+     Button tmp = getByNum(pitch);
+     tmp.on=false;
+     tmp.send();
+   */
+}
 
 void controllerChange(int channel, int number, int value, long timestamp, String bus_name) {
   if(debug){
@@ -134,7 +134,7 @@ search:
     Button ttmp = (Button)buttons.get(i);
     if(ttmp.num==in){
       index = i;
-    break search;
+      break search;
     }
   }
 
