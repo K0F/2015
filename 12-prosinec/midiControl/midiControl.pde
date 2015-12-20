@@ -1,7 +1,18 @@
 import themidibus.*; //Import the library
+import processing.serial.*;
+
+/*
+
+import cc.arduino.*;
+
+
+Arduino arduino;
+*/
+
 
 MidiBus busA; //The first MidiBus
 
+Serial port;
 
 /////////////////////////////////////////////////////////////////
 String name = "VirMIDI [hw:3,0,0]";
@@ -12,6 +23,8 @@ int Y = 0;
 int w = 20;
 
 
+char hs[] = {'W','E','R','T','Y','U'};
+char ls[] = {'S','D','F','G','H','J'};
 
 ArrayList buttons;
 int notes[] = {
@@ -28,11 +41,18 @@ void setup() {
   size(400, 400);
   background(0);
 
+  println(Serial.list());
+port = new Serial(this, Serial.list()[0], 9600);
+
+  
+
+  
+
   frameRate(30);
 
   buttons = new ArrayList();
   for(int i = 0 ; i< notes.length;i++){
-    buttons.add(new Button(notes[i]));
+    buttons.add(new Button(notes[i],i));
   }
 
   MidiBus.list(); //List all available Midi devices. This will show each device's index and name.
@@ -151,11 +171,13 @@ void delay(int time) {
 
 class Button{
   int num;
+  int id;
   boolean on = false;
   PVector pos;
 
-  Button(int _num){
+  Button(int _num,int _id){
     num = _num;
+    id = _id;
     pos = new PVector(X*w,Y*w);
     X+=1;
     if(X>=4){
@@ -171,8 +193,10 @@ class Button{
 
     if(on){
       busA.sendNoteOn(channel, pitch, velocity); //Send a noteOn to OutgoingA and OutgoingC through busA
+      port.write(hs[id]);
     }else{
       busA.sendNoteOff(channel, pitch, velocity); //Send a noteOff to OutgoingA and OutgoingC through busA
+      port.write(ls[id]);
     }
   }
 
@@ -184,7 +208,6 @@ class Button{
     popMatrix();
     send();
 
-    on = (noise((frameCount+(num*2.0))/3.0)>0.5)?true:false;
   }
 
 }
