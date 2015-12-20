@@ -15,7 +15,8 @@ MidiBus busA; //The first MidiBus
 Serial port;
 
 /////////////////////////////////////////////////////////////////
-String name = "VirMIDI [hw:3,0,0]";
+String name = "VirMIDI [default]";
+//String name = "MPD218 [hw:2,0,0]";
 
 boolean debug = false;
 int X = 0;
@@ -56,7 +57,7 @@ port = new Serial(this, Serial.list()[0], 9600);
   }
 
   MidiBus.list(); //List all available Midi devices. This will show each device's index and name.
-
+/*
   //This is a different way of listing the available Midi devices.
   println(); 
   println("Available MIDI Devices:"); 
@@ -72,7 +73,7 @@ port = new Serial(this, Serial.list()[0], 9600);
   System.out.println("----------Unavailable (from unavailableDevices())----------");
   String[] unavailable = MidiBus.unavailableDevices(); //Returns an array of unavailable devices
   for (int i = 0;i < unavailable.length;i++) System.out.println("["+i+"] \""+unavailable[i]+"\"");
-
+*/
   busA = new MidiBus(this, name, name, name); //Create a first new MidiBus attached to the IncommingA Midi input device and the OutgoingA Midi output device. We will name it busA.
 
   busA.addOutput(name); //Add a new output device to busA called OutgoingC
@@ -191,6 +192,7 @@ class Button{
     int pitch = num;
     int velocity = 127;
 
+if(id<6)
     if(on){
       busA.sendNoteOn(channel, pitch, velocity); //Send a noteOn to OutgoingA and OutgoingC through busA
       port.write(hs[id]);
