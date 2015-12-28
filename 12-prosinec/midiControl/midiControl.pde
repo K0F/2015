@@ -1,14 +1,6 @@
 import themidibus.*; //Import the library
 import processing.serial.*;
 
-/*
-
-   import cc.arduino.*;
-
-
-   Arduino arduino;
- */
-
 
 MidiBus busA; //The first MidiBus
 
@@ -56,7 +48,7 @@ void setup() {
     buttons.add(new Button(notes[i],i));
   }
 
-  MidiBus.list(); //List all available Midi devices. This will show each device's index and name.
+  //MidiBus.list(); //List all available Midi devices. This will show each device's index and name.
   /*
   //This is a different way of listing the available Midi devices.
   println(); 
